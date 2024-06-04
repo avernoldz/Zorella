@@ -1,0 +1,79 @@
+/*  */
+.main {
+  background: url("../Assets/bg2.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+.main::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  background-repeat: repeat;
+  height: 105%;
+  width: 100%;
+}
+
+/* Payment Method */
+h1,
+.h1,
+h2,
+.h2,
+h3,
+.h3 {
+  margin: 0;
+}
+
+#payment .via {
+  background-color: white;
+  border: 1px solid rgb(255, 154, 118);
+  padding: 16px 32px;
+  width: 30%;
+  margin-left: 24px;
+  border-radius: 4px;
+  box-shadow: 0px 3px 5px -3px rgba(0, 0, 0, 0.3);
+  transition: 0.5s;
+  cursor: pointer;
+}
+
+#payment input[type="radio"] {
+  display: none;
+}
+
+#payment input[type="radio"]:checked + .via {
+  /* target next sibling (+) label */
+  transform: translateX(5%);
+}
+
+/* Dropdown */
+.dropdown h2 {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 16px;
+  margin-top: 16px;
+  color: white;
+}
+
+.dropdown-menu {
+  width: 230px;
+  background-color: var(--main-300);
+  color: white;
+  padding: 0px;
+}
+
+.dropdown hr {
+  margin: 0;
+}
+
+.header .dropdown .dropdown-menu a {
+  color: white;
+  padding: 16px;
+  transition: 0.3s;
+}
+
+.header .dropdown .dropdown-menu a:hover {
+  color: var(--main-300);
+}

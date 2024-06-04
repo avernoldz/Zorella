@@ -1,0 +1,365 @@
+html {
+  scroll-behavior: smooth;
+}
+
+.wrapper {
+  background-image: url("../Assets/bg2.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  font-style: normal;
+  height: 65vh;
+}
+
+.header {
+  width: 100%;
+}
+
+.header ul li {
+  list-style-type: none;
+  display: inline;
+  padding: 16px;
+  margin-right: 24px;
+}
+
+.header ul li a {
+  color: white;
+  text-decoration: none;
+  font-size: 16px;
+}
+
+.dropdown h2 {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 16px;
+  margin-top: 16px;
+}
+
+.dropdown-menu {
+  width: 200px;
+}
+
+.dropdown hr {
+  margin: 0;
+}
+
+.header ul li .dropdown a {
+  color: var(--font);
+  padding: 16px;
+}
+
+.header .col {
+  padding: 0;
+}
+
+.header ul {
+  padding: 16px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.logo h1 {
+  color: #ffffff;
+  font-size: 72px;
+  letter-spacing: -2px;
+  margin-top: 80px;
+  font-family: "Analouge";
+}
+
+.logo h2 {
+  font-size: 24px;
+  color: #ffffff;
+}
+
+.logo .row {
+  align-items: center;
+}
+
+.modal-content {
+  padding: 24px;
+  border-radius: 24px;
+}
+
+.modal-content .form-control.form {
+  padding: 32px;
+  border: none;
+  background-color: #f2f2f2;
+  border-radius: 32px;
+}
+
+.modal-content button {
+  padding: 20px;
+  border-radius: 48px;
+}
+
+.modal-body .row.error {
+  background-color: #ffebe8;
+  border: 1px solid #dd3c10;
+  padding: 8px;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.modal-body .row.login-first {
+  background-color: #fff9d7;
+  border: 1px solid #e2c822;
+  padding: 8px;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+/* Infinite Slide */
+.gallery {
+  overflow: hidden;
+  padding: 24px 0;
+  white-space: nowrap;
+  position: relative;
+}
+
+/* .slide::before,
+.slide::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 180px;
+  z-index: 5;
+}
+
+.slide::before {
+  background: linear-gradient(to left, rgba(255, 255, 255, 0), white);
+  left: 0;
+}
+
+.slide::after {
+  background: linear-gradient(to right, rgba(255, 255, 255, 0), white);
+  right: 0;
+} */
+
+.gallery .slide-gallery {
+  display: inline-block;
+  animation: 15s slide infinite linear;
+}
+
+.gallery:hover .slide-gallery {
+  animation-play-state: paused;
+}
+.gallery .slide-gallery img {
+  margin: 0 8px;
+  width: 200px;
+  border-radius: 4px;
+  box-shadow: 0px 3px 5px -3px rgba(0, 0, 0, 0.9);
+}
+
+@keyframes slide {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+/* Why Choose Us */
+
+.choose-us {
+  background-color: white;
+  padding: 80px;
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.row.choose {
+  max-width: 1280px;
+}
+
+.choose-us h1 {
+  font-family: "Analouge";
+  font-size: 64px;
+  text-transform: uppercase;
+}
+
+.choose-us p {
+  text-align: justify;
+  font-size: 20px;
+  letter-spacing: -1px;
+}
+
+.choose-us .img-pos {
+  position: absolute;
+  top: 60px;
+  left: 130px;
+}
+
+.choose-us .button button,
+.contact-us button {
+  padding: 16px 24px;
+  border-radius: 4px;
+  font-size: 16px;
+  font-family: Analouge;
+  border: none;
+  border: 1px solid var(--maindark);
+  background-color: var(--maindark);
+  color: white;
+  transition: 0.5s;
+}
+.choose-us .button button:hover,
+.contact-us button:hover {
+  background-color: white;
+  border: 1px solid var(--maindark);
+  color: var(--maindark);
+}
+
+/* Feedback */
+.carousel,
+.carousel-item .bg {
+  max-height: 500px;
+  height: 500px;
+}
+
+.carousel-item .bg {
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.carousel .feed-back {
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 16px 300px;
+  flex-wrap: wrap;
+}
+
+.carousel h1 {
+  font-family: Analouge;
+  font-size: 48px;
+}
+
+.carousel p {
+  font-size: 20px;
+}
+
+.carousel h3 {
+  font-family: Analouge;
+  font-size: 24px;
+  font-style: italic;
+}
+
+.carousel-item .bg.one {
+  background-image: url("../Assets/feed1.webp");
+}
+
+.carousel-item .bg.two {
+  background-image: url("../Assets/feed2.webp");
+}
+
+.carousel-item .bg.three {
+  background-image: url("../Assets/feed3.webp");
+}
+
+.carousel-control-next,
+.carousel-control-prev {
+  z-index: 10;
+}
+
+/* Best Offers */
+.best-offers {
+  background-color: #f2f2f2;
+  padding: 80px;
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  font-family: Analouge;
+}
+
+.row.offers {
+  max-width: 1280px;
+}
+
+.best-offers img {
+  width: 280px;
+  box-shadow: 0px 3px 5px -3px rgba(0, 0, 0, 0.9);
+  border-radius: 4px;
+}
+
+@media screen and (max-width: 1280px) {
+  .best-offers img {
+    width: 250px;
+  }
+}
+
+.best-offers h1 {
+  text-transform: uppercase;
+}
+
+.best-offers .row.offers {
+  width: 100%;
+}
+
+.best-offers .row.offers .row {
+  row-gap: 24px;
+}
+
+/* Contact Us */
+.contact-us {
+  background-color: white;
+  padding: 80px;
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  font-family: Analouge;
+}
+
+.row.contact {
+  max-width: 1280px;
+}
+
+.contact-us h1 {
+  font-size: 56px;
+}
+
+.contact-us .row.contact {
+  width: 100%;
+}
+
+.contact-us a {
+  text-decoration: none;
+  color: var(--font);
+}
+
+.contact-us form {
+  font-family: "Inter", serif;
+  padding-right: 48px;
+}
+
+.contact-us form input[type="text"],
+.contact-us form input[type="email"],
+.contact-us form textarea {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 1px;
+  padding: 24px 16px;
+}
+
+footer {
+  width: 100%;
+  height: 50px;
+  background-color: rgb(24, 24, 24);
+  color: rgb(109, 109, 109);
+  text-align: center;
+  padding: 16px 8px 8px 8px;
+}
+
+footer label {
+  margin: 0;
+}

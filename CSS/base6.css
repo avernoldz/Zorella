@@ -1,0 +1,59 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Allura&family=Inter:wght@100..900&family=Shadows+Into+Light&display=swap");
+
+:root {
+  --sub: #ff9e8d;
+  --main: #da4451;
+  --maindark: #b53641;
+  --main-300: #942730;
+  --main-500: #771e26;
+  --delete: #dd3333;
+  --edit: #3085d6;
+  --save: #82b24f;
+  --bg: #f1f4f9;
+  --font: #303030;
+}
+
+@font-face {
+  font-family: Analouge;
+  src: url("Font/Analogue.otf");
+}
+
+body {
+  font-family: "Inter", sans-serif !important;
+  color: var(--font);
+  background-color: #f2f2f2 !important;
+}
+
+.w-500 {
+  font-weight: 500;
+}
+
+.w-700 {
+  font-weight: 700 !important;
+}
+
+.flex {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  align-items: center;
+  column-gap: 24px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.row,
+.col {
+  margin: 0;
+  padding: 0;
+}
+
+.required {
+  color: var(--delete);
+  font-weight: 700;
+}
