@@ -126,7 +126,8 @@ $quotationResults = mysqli_query($conn, $quotation);
                         while($quotationRows = mysqli_fetch_array($quotationResults)) {
                             ?>
 
-                    <a href="#" class="populate-quote w-100">
+                    <a href="quotation-admin.php?adminid=<?php echo $adminid?>"
+                        class="populate-quote w-100">
                         <div class="row populate-quote">
                             <div class="col-4">
                                 <small><label for="" class="w-700">
@@ -220,12 +221,12 @@ $quotationResults = mysqli_query($conn, $quotation);
                 $('.row.ratings').load(' .row.ratings');
                 $('.row.frame-quote').load(" .row.frame-quote");
 
-                    // if ($('.row.frame.ratings').find('#8').length) {
-                    //     old = current;
-                    //     $('#8').addClass("new");
-                    // }
+                // if ($('.row.frame.ratings').find('#8').length) {
+                //     old = current;
+                //     $('#8').addClass("new");
+                // }
 
-                    // console.log(current);
+                // console.log(current);
             }, 5000);
 
         })

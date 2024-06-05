@@ -114,7 +114,8 @@
                     </ul>
 
 
-                    <a href="#">
+                    <a
+                        href="quotation-admin.php?adminid=<?php echo $adminid?>">
                         <li class="navi <?php if($active == "Quotations") {
                             echo "active";
                         }?>">
