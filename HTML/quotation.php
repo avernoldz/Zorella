@@ -62,6 +62,12 @@ include "side-bar.php";
                             </div>
                         </div>
 
+                        <div class="row">
+                            <div class="col-12">
+                                <h1>Requests</h1>
+                            </div>
+                        </div>
+
                         <div class="modal" id="request" tabindex="-1" role="dialog" aria-labelledby="requestTitle"
                             aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
