@@ -162,7 +162,7 @@ if (isset($_POST["submit"])) {
 
     //Recipients
     $mail->setFrom('gremoryyxx@gmail.com', 'Zorella Travel and Tours'); // Sender Email and name
-    $mail->addAddress('gremoryyxx@gmail.com');     //Add a recipient email
+    $mail->addAddress($quotationRows['email2']);     //Add a recipient email
     $mail->addReplyTo('gremoryyxx@gmail.com', 'Zorella Travel and Tours'); // reply to sender email
 
     //Content
