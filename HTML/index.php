@@ -2,19 +2,19 @@
 session_start();
 session_regenerate_id();
 
-if(isset($_GET['logout'])) {
+if (isset($_GET['logout'])) {
     unset($_SESSION['userid']);
     echo "<script>window.location.href='index.php?index';</script>";
 }
 
-if(isset($_GET['Logout'])) {
+if (isset($_GET['Logout'])) {
     unset($_SESSION['adminid']);
     echo "<script>window.location.href='index.php';</script>";
 }
 
-if(isset($_SESSION['userid'])) {
-    header("Location:dashboard.php?userid=$_SESSION[userid]");
-}
+// if(isset($_SESSION['userid'])) {
+//     header("Location:dashboard.php?userid=$_SESSION[userid]");
+// }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -24,7 +24,7 @@ if(isset($_SESSION['userid'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../CSS/base6.css">
     <link rel="stylesheet" href="../CSS/user6.css">
-    <?php include "../Connections/cdn.php"?>
+    <?php include "../inc/cdn.php" ?>
     <title>Login</title>
     <style>
         .row,
@@ -45,9 +45,9 @@ if(isset($_SESSION['userid'])) {
 
 <body>
     <?php
-    include "../Connections/Include.php";
+    include "../inc/Include.php";
 
-?>
+    ?>
 
 
     <div class="wrapper">
@@ -128,7 +128,7 @@ if(isset($_SESSION['userid'])) {
                 <img src="../Assets/choose-us2.webp" alt="tourist-spot" height="90%" style="border-radius:4px;"
                     class="img-pos">
             </div>
-            <div class="col-5" style="margin-top: 48px;margin-left:48px;">
+            <div class="col" style="margin-top: 48px;margin-left:48px;">
                 <h1>Why choose us?</h1>
                 <p>When you plan your trip with one of our experienced travel advisors, you’ll discover a world of
                     difference creating memorable and carefree vacations. We know all vacations are not the same. With
@@ -388,8 +388,8 @@ if(isset($_SESSION['userid'])) {
                     </div>
                     <div class="modal-body">
                         <?php
-                            if(isset($_GET['login-first'])) {
-                                echo"
+                        if (isset($_GET['login-first'])) {
+                            echo "
                                     <div class='row login-first'>
                                         <div class='col'>
                                             <h6>Login first</h6>
@@ -398,10 +398,10 @@ if(isset($_SESSION['userid'])) {
                                     </div>
                                     <script>$('#sign-in').modal('show');</script>
                                     ";
-                            }
+                        }
 
-if(isset($_GET['wrong-password-or-email'])) {
-    echo"
+                        if (isset($_GET['wrong-password-or-email'])) {
+                            echo "
                                 <div class='row error'>
                                     <div class='col'>
                                         <h6>Incorrect password or username</h6>
@@ -410,8 +410,8 @@ if(isset($_GET['wrong-password-or-email'])) {
                                 </div>
                                 <script>$('#sign-in').modal('show');</script>
                                 ";
-}
-?>
+                        }
+                        ?>
                         <div class="form-group">
                             <input type="email" class="form-control form" id="email-sign" name="email-sign"
                                 aria-describedby="emailHelp" placeholder="&#xf0e0; Email"
@@ -452,8 +452,8 @@ if(isset($_GET['wrong-password-or-email'])) {
                     </div>
                     <div class="modal-body">
                         <?php
-                            if(isset($_GET['Login-first'])) {
-                                echo"
+                        if (isset($_GET['Login-first'])) {
+                            echo "
                                     <div class='row login-first'>
                                         <div class='col'>
                                             <h6>Login first</h6>
@@ -462,10 +462,10 @@ if(isset($_GET['wrong-password-or-email'])) {
                                     </div>
                                     <script>$('#sign-admin').modal('show');</script>
                                     ";
-                            }
+                        }
 
-if(isset($_GET['wrong-password-email'])) {
-    echo"
+                        if (isset($_GET['wrong-password-email'])) {
+                            echo "
                                 <div class='row error'>
                                     <div class='col'>
                                         <h6>Incorrect password or username</h6>
@@ -474,8 +474,8 @@ if(isset($_GET['wrong-password-email'])) {
                                 </div>
                                 <script>$('#sign-admin').modal('show');</script>
                                 ";
-}
-?>
+                        }
+                        ?>
                         <div class="form-group">
                             <input type="email" class="form-control form" id="email" name="email-admin"
                                 aria-describedby="emailHelp" placeholder="&#xf0e0; Email"
@@ -499,83 +499,81 @@ if(isset($_GET['wrong-password-email'])) {
     </form>
 
     <?php
-        $options = ['cost' => 12,];
+    $options = ['cost' => 12,];
 
-if(isset($_POST['sign-up'])) {
+    if (isset($_POST['sign-up'])) {
 
-    $firstname = $_POST['firstname'];
-    $lastname = $_POST['lastname'];
-    $email = $_POST['email'];
-    $password = $_POST['password'];
+        $firstname = $_POST['firstname'];
+        $lastname = $_POST['lastname'];
+        $email = $_POST['email'];
+        $password = $_POST['password'];
 
-    $hash_pass = password_hash("$password", PASSWORD_BCRYPT, $options);
-    $query = "INSERT INTO user(firstname, lastname, email, password)
+        $hash_pass = password_hash("$password", PASSWORD_BCRYPT, $options);
+        $query = "INSERT INTO user(firstname, lastname, email, password)
                         VALUES('$firstname', '$lastname', '$email', '$hash_pass')";
-    // $results = mysqli_query($conn, $query);
+        // $results = mysqli_query($conn, $query);
 
 
-    if(mysqli_query($conn, $query)) {
-        echo "<script>window.location.href='index.php?alert=1';</script>";
-    } else {
-        echo mysqli_error($conn);
+        if (mysqli_query($conn, $query)) {
+            echo "<script>window.location.href='index.php?alert=1';</script>";
+        } else {
+            echo mysqli_error($conn);
+        }
     }
-}
 
-if(isset($_POST['sign-in'])) {
-    
-    $email = $_POST['email-sign'];
-    $password = $_POST['password-sign'];
+    if (isset($_POST['sign-in'])) {
 
-    $query = "SELECT * FROM user where email = '$email'";
-    $results = mysqli_query($conn, $query);
+        $email = $_POST['email-sign'];
+        $password = $_POST['password-sign'];
 
-    if(mysqli_num_rows($results) > 0) {
-        $rows = mysqli_fetch_array($results);
-        $pwd_hashed = $rows['password'];
-    
-        if(password_verify($password, $pwd_hashed)) {
-            $_SESSION['userid'] = $rows['userid'];
-            echo "<script>window.location.href='dashboard.php?userid=$rows[userid]';</script>";
+        $query = "SELECT * FROM user where email = '$email'";
+        $results = mysqli_query($conn, $query);
+
+        if (mysqli_num_rows($results) > 0) {
+            $rows = mysqli_fetch_array($results);
+            $pwd_hashed = $rows['password'];
+
+            if (password_verify($password, $pwd_hashed)) {
+                $_SESSION['userid'] = $rows['userid'];
+                echo "<script>window.location.href='user/dashboard.php?userid=$rows[userid]';</script>";
+            } else {
+                echo "<script>window.location.href='index.php?wrong-password-or-email';</script>";
+            }
         } else {
             echo "<script>window.location.href='index.php?wrong-password-or-email';</script>";
         }
-    
-    } else {
-        echo "<script>window.location.href='index.php?wrong-password-or-email';</script>";
     }
-}
 
 
-if(isset($_POST['admin'])) {
-    
-    $email = $_POST['email-admin'];
-    $password = $_POST['password-admin'];
+    if (isset($_POST['admin'])) {
 
-    $query = "SELECT * FROM admin where email = '$email'";
-    $results = mysqli_query($conn, $query);
+        $email = $_POST['email-admin'];
+        $password = $_POST['password-admin'];
 
-    if(mysqli_num_rows($results) > 0) {
-        $rows = mysqli_fetch_array($results);
-        $pwd_hashed = $rows['password'];
-    
-        if(password_verify($password, $pwd_hashed)) {
-            $_SESSION['adminid'] = $rows['adminid'];
-            echo "<script>window.location.href='dashboard-admin.php?adminid=$rows[adminid]';</script>";
+        $query = "SELECT * FROM admin where email = '$email'";
+        $results = mysqli_query($conn, $query);
+
+        if (mysqli_num_rows($results) > 0) {
+            $rows = mysqli_fetch_array($results);
+            $pwd_hashed = $rows['password'];
+
+            if (password_verify($password, $pwd_hashed)) {
+                $_SESSION['adminid'] = $rows['adminid'];
+                echo "<script>window.location.href='admin/dashboard-admin.php?adminid=$rows[adminid]';</script>";
+            } else {
+                echo "<script>window.location.href='index.php?wrong-password-email';</script>";
+            }
         } else {
             echo "<script>window.location.href='index.php?wrong-password-email';</script>";
         }
-    
-    } else {
-        echo "<script>window.location.href='index.php?wrong-password-email';</script>";
     }
-}
 
-?>
+    ?>
 
 </body>
 
 <script>
-    $('.carousel').carousel(true);
+    // $('.carousel').carousel(true);
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(window.location.search);
     const alert = urlParams.get('alert');
