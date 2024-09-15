@@ -1,0 +1,192 @@
+.main .col.card .row {
+  align-items: center;
+}
+
+.row.populate {
+  background: var(--sub);
+  padding: 8px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  max-height: 70px;
+  min-height: 70px;
+}
+
+.row.populate .col-9 p,
+.col-8.ellip {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.row.populate:nth-child(even),
+a.populate-quote:nth-child(even) .row.populate-quote {
+  background-color: #ffb3a5;
+}
+
+.row.frame-quote a:hover {
+  opacity: 0.95;
+  cursor: pointer;
+  color: white;
+  text-decoration: none;
+}
+
+.row.populate-quote {
+  background: var(--sub);
+  padding: 8px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.col .row.case .table > tbody > tr > td {
+  border: none;
+  border-bottom: 1px solid #ddd;
+}
+
+.main .row.bkq .col.case table tr td {
+  border: none;
+  border-bottom: 1px solid #ddd;
+}
+
+label {
+  margin: 0;
+}
+
+.main .bkq .case {
+  min-height: auto;
+  height: fit-content;
+  max-height: fit-content;
+}
+
+.main .row.frame-quote {
+  max-height: 74vh;
+  overflow-y: auto;
+}
+
+.main .row.frame-quote .total {
+  border: none;
+  border-bottom: 1px solid #ddd;
+  width: 11%;
+}
+
+.main .row.frame-quote .total:focus,
+.main .row.frame-quote .clusions:focus {
+  outline: none;
+}
+
+.main .row.frame-quote .clusions {
+  padding: 8px;
+  border: none;
+  border-left: 1px solid #ddd;
+}
+
+.card {
+  background-color: #ffffff;
+  border-radius: 4px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  /* max-width: 500px; */
+  width: 100%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.card.booking {
+  height: fit-content;
+}
+
+.card-header {
+  /* Accent color */
+  padding: 15px;
+  border-radius: 8px;
+  font-size: 14px;
+  background: none;
+}
+
+.card-header h2 {
+  margin: 0;
+  font-size: 1.1em;
+  font-weight: 700;
+}
+
+.card-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.card-info {
+  margin-bottom: 20px;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px;
+  border-bottom: 1px solid #e1e1e1;
+}
+
+.info-item p {
+  font-weight: bold;
+  /* Accent color */
+}
+
+.info-item label,
+.bkq .row.case label {
+  font-weight: normal;
+  color: #555555;
+  /* Accent color */
+}
+
+.info-item p {
+  margin: 0;
+  color: #333;
+}
+
+.card-images {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.image-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  padding: 10px;
+}
+
+.image-item label {
+  font-weight: bold;
+  /* Accent color */
+  margin-bottom: 5px;
+}
+
+.image-item img {
+  width: 275px; /* Set a fixed width */
+  height: 150px; /* Set a fixed height */
+  object-fit: cover; /* Crop or scale image to fill the box */
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.main .accept button {
+  width: 150px;
+  transition: all 0.5s ease;
+}
+
+.main .accept button:hover {
+  transform: translateY(-10%);
+}
+
+/* .main .accept button:nth-child(1) {
+  border: 1px solid var(--maindark);
+  background: var(--maindark);
+} */
+
+.main .accept button:nth-child(2) {
+  color: var(--font);
+  border: 1px solid rgb(194, 194, 194);
+  background: white;
+}
