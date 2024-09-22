@@ -26,7 +26,7 @@ if (!$_SESSION['adminid']) {
     $bookingtype = $_GET['bookingtype'];
     $bookid = $_GET['bookid'];
     $adminid = $_GET['adminid'];
-    $active = "Pending Bookings";
+    $active = $bookingtype;
     $on = "on";
     include "../../inc/Include.php";
     include "header-admin.php";
@@ -38,8 +38,10 @@ if (!$_SESSION['adminid']) {
     user.userid, 
     leadpersoninfo.*, 
     educational.*, 
-    booking.branch,
-    payment.*
+    booking.*,
+    booking.branch AS branchs,
+    payment.*,
+    paymentinfo.*
     FROM 
         user
     INNER JOIN 
@@ -47,9 +49,10 @@ if (!$_SESSION['adminid']) {
     INNER JOIN 
         leadpersoninfo ON leadpersoninfo.booking_id = educational.educationalid
     INNER JOIN 
-        booking ON booking.booking_id = educational.educationalid  -- Adjust this join condition if necessary
+        booking ON booking.booking_id = educational.educationalid AND booking.booking_type = '$bookingtype' -- Adjust this join condition if necessary
     INNER JOIN 
-        payment ON payment.booking_id = booking.booking_id 
+        payment ON payment.booking_id = booking.booking_id AND payment.booking_type = '$bookingtype'
+    LEFT JOIN  paymentinfo ON paymentinfo.payment_id = payment.paymentid 
     WHERE 
         educational.educationalid = '$bookingid';
     ";
@@ -60,13 +63,20 @@ if (!$_SESSION['adminid']) {
     $frow = $quotationRows[0] ?? null;
 
     $dateFormats = [
+        'sdate' => 'M d, Y',
+        'edate' => 'M d, Y',
         'created_at' => 'M d, Y : h:i A'
     ];
-    // Access the 'created_at' value correctly
-    $date = new DateTime($frow['created_at']);
 
-    // Use the correct format string directly from the $dateFormats array
-    $frow['created_at'] = $date->format($dateFormats['created_at']);
+    foreach ($dateFormats as $key => $format) {
+        if (isset($frow[$key]) && $frow[$key] !== '0000-00-00') {
+            $date = new DateTime($frow[$key]);
+            $frow[$key] = $date->format($format);
+        } else {
+            // Set to empty string if date is '0000-00-00' or not set
+            $frow[$key] = '';
+        }
+    }
 
     ?>
     <div class="main">
@@ -75,10 +85,17 @@ if (!$_SESSION['adminid']) {
                 <div class="col flex">
                     <h1 class="w-700"><i class="fa-solid fa-envelope fa-fw"></i>&nbsp;&nbsp;<?php echo "$frow[user_firstname] $frow[user_lastname]" ?></h1>
                 </div>
-                <div class="col flex justify-content-end accept">
-                    <button type="button" data-target="#accept" data-toggle="modal" class="btn btn-success"><i class="fa-solid fa-check fa-fw "></i>Accept</button>
-                    <button type="button" class="btn btn-secondary"><i class="fa-solid fa-xmark fa-fw text-danger"></i> Reject</button>
-                </div>
+                <?php if ($frow['status'] == 'Pending'): ?>
+                    <div class="col flex justify-content-end accept">
+                        <button type="button" data-target="#accept" data-toggle="modal" class="btn btn-success"><i class="fa-solid fa-check fa-fw "></i>Accept</button>
+                        <!-- <button type="button" class="btn btn-secondary"><i class="fa-solid fa-xmark fa-fw text-danger"></i> Reject</button> -->
+                    </div>
+                <?php else: ?>
+                    <div class="col flex justify-content-end accept">
+                        <?php echo "<a style='font-size: 12px;' class='btn btn-success' href='confirmation-bookings/$frow[confirmation_pdf]' target='_blank'>Download Confirmation Booking</a>" ?>
+                        <!-- <button type="button" class="btn btn-secondary"><i class="fa-solid fa-xmark fa-fw text-danger"></i> Reject</button> -->
+                    </div>
+                <?php endif; ?>
             </div>
             <div class="card col-7 mr-4 booking">
                 <div class="card-header flex">
@@ -89,7 +106,7 @@ if (!$_SESSION['adminid']) {
                     <div class="card-info">
                         <div class="info-item">
                             <label>Branch</label>
-                            <p><?php echo $frow['branch'] ?></p>
+                            <p><?php echo $frow['branchs'] ?></p>
                         </div>
                         <div class="info-item">
                             <label>Start Date</label>
@@ -115,6 +132,18 @@ if (!$_SESSION['adminid']) {
                                 <p><?php echo htmlspecialchars($frow['attraction']); ?></p>
                             </div>
                         <?php endif; ?>
+                        <div class="info-item">
+                            <label>Status</label>
+                            <?php
+                            if ($frow['status'] == 'Pending') {
+                                echo "<p class='text-warning'>Pending</p>";
+                            } else if ($frow['status'] == 'Payment') {
+                                echo "<p class='text-info'>Confirmed Booking, waiting for payment</p>";
+                            } else {
+                                echo "<p class='text-success'>Paid</p>";
+                            }
+                            ?>
+                        </div>
                         <div class="info-item">
                             <label>Date Created</label>
                             <p><?php echo $frow['created_at'] ?></p>
@@ -191,36 +220,128 @@ if (!$_SESSION['adminid']) {
             aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title w-700 ml-3" id="request">Accept Booking</h5>
-                    </div>
                     <form action="inc/accept-booking.php" style="width: 100%;" id="accept" class="needs-validation" method="POST" enctype="multipart/form-data" novalidate>
                         <div class="modal-body mb-4 mt-3">
-                            <div class="row w-100">
-                                <div class="col-8">
-                                    <label for="">Title</label><label for="" class="required">*</label>
-                                    <input type="text" id="title"
-                                        placeholder="Osaka Japan" name="title"
-                                        class="form-control" required>
-                                </div>
-                                <div class="w-100"></div>
-                                <div class="col-6 mt-4">
-                                    <label for="">Price</label><label for="" class="required">*</label>
-                                    <input type="number" id="price"
-                                        placeholder="&#x20B1; 9,999.00" name="price" step="0.01" min="0"
-                                        class="form-control" required>
-                                </div>
+                            <div class="col-12 case mr-4">
+                                <div class="row frame-quote w-100">
+                                    <div class="col-12">
+                                        <p class="text-center"><label>ZORELLA TRAVEL AND TOURS</label> <br>
+                                            CALUMPANG LILIW LAGUNA <br>
+                                            Laguna, Philippines 4004 <br>
+                                            +639237374423 <br>
+                                            zorellatravelandtours@gmail.com
+                                        </p>
+                                        <p class="text-center w-700 mt-3" style="font-size: 14px;"> CONFIRMATION BOOKING</p>
+                                        <p class="text-center w-700" style="font-size: 14px;"> (BOOKING ORDER)</p>
 
-                                <div class="w-100"></div>
-                                <div class="col-12 mt-4">
-                                    <label for="description">Description</label>
-                                    <textarea class="form-control" id="description" name="description" maxlength="250" rows="3" required></textarea>
-                                    <div class="char-count float-right">
-                                        <span id="charCount">250</span> characters remaining
+                                        <div class="row w-100">
+                                            <div class="col flex">
+                                                <p> Date: <label id="today_date"><?php echo date('F d, Y') ?></label></p>
+                                                <p> BOOKING ORDER NO: <label><?php echo $bookid ?></label></p>
+                                            </div>
+                                            <div class=" w-100"></div>
+                                            <div class="col">
+                                                <br>
+                                                <p>Good Day!</p>
+                                                <br>
+                                                <p>We are please to confirm to your booking as shown below</p>
+                                            </div>
+                                        </div>
+                                        <hr class="mb-3 mt-3">
+
+                                        <div class="row w-100">
+                                            <div class="col flex " style="align-items: normal;">
+                                                <div class=" div">
+                                                    <p>Days: <label><?php
+                                                                    $date1 = new DateTime($frow['sdate']);
+                                                                    $date2 = new DateTime($frow['edate']);
+
+                                                                    $interval = $date1->diff($date2);
+                                                                    echo $interval->days . ' Days';
+                                                                    ?></label></p>
+                                                    <p>Date: <label id="travel_date"><?php echo $frow['sdate'] ?></label></p>
+                                                    <p>PAX: <label id="total_pax"><?php echo $frow['pax'] ?></label></p>
+                                                </div>
+                                                <div>
+                                                    <p class="w-700 text-center pl-4 pr-3" style="background:#ffb0f1;">PER PERSON RATE</p>
+                                                    <span>PHP </span><input type="number" id="price_pax" name="pax_price" required min="0" style="width: 5rem; border:none; border-bottom: 1px solid #e3e3e3;" placeholder="20,000.00"> <span>/ PAX</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row w-100 mt-2">
+                                            <div class="col flex">
+                                                <div class="col-9"></div>
+                                                <div class="col">
+                                                    <p class="w-700 text-center pl-2 pr-2" style="background:#fbd3f4;">TOTAL AMOUNT</p>
+                                                    <p class="w-700 text-center pl-2 pr-2" style="background:#ffb0f1;">PHP <label id="total_price"></label></p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row-100 mt-3">
+                                            <table class="w-100 table table-bordered down">
+                                                <tr>
+                                                    <td>
+                                                        <p>DOWNPAYMENT: <span class="w-700">PHP </span><input type="number" id="downpayment" name="downpayment" required min="0" style="width: 5rem; border:none; border-bottom: 1px solid #e3e3e3;" placeholder="20,000.00"></p>
+                                                        <small class="text-danger">to be paid at your earliest convenince*</small>
+                                                    </td>
+                                                    <td>
+                                                        <p>REMAINING BALANCE: <span class="w-700">PHP </span><span class="w-700" id="remaining_balance"></span></p>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+
+                                                    </td>
+                                                    <td id="installments">
+
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+
+                                        <div class="row-100 mt-3">
+                                            <table class="w-100 table table-bordered passengers">
+                                                <tr>
+                                                    <td colspan="3" class="text-center w-700">LEAD PERSON INFORMATION</td>
+                                                </tr>
+                                                <tr class="text-center">
+                                                    <td class="w-700">FIRSTNAME</td>
+                                                    <td class="w-700">SURNAME</td>
+                                                    <td class="w-700">POSITION</td>
+                                                </tr>
+                                                <tr class="text-center">
+                                                    <td><?php echo $frow['firstname'] ?></td>
+                                                    <td><?php echo $frow['lastname'] ?></td>
+                                                    <td><?php echo $frow['position'] ?></td>
+                                                </tr>
+                                            </table>
+                                        </div>
+
+                                        <div class="mb-4 mt-4">
+                                            <textarea id="itinerary-textarea" name="terms" rows="20"></textarea>
+
+                                        </div>
+                                        <p style="text-align:right;">Prepared by: <label>Janine Rabajante</label><br>
+                                            Marketing Executive
+                                        </p>
+                                        <br>
+                                        <p style="text-align:right;">Conforme: <label>Ms. Bernadette Cagampan</label><br>
+                                            Operations Manager
+                                        </p>
                                     </div>
                                 </div>
                             </div>
 
+                            <input type="hidden" name="booking_id" value="<?php echo $bookingid ?>">
+                            <input type="hidden" name="booking_type" value="<?php echo $bookingtype ?>">
+                            <input type="hidden" name="paymentid" value="<?php echo $frow['paymentid'] ?>">
+                            <input type="hidden" name="remaining_balance" id="remaining_bal" value="">
+                            <input type="hidden" name="price_to_pay" id="price_to_pay" value="">
+                            <input type="hidden" name="installment_number" id="installment_number" value="">
+                            <input type="hidden" name="due_date" id="due_date" value="">
+                            <input type="hidden" name="total_price" id="total_amount" value="">
                             <input type="hidden" name="bookid" value="<?php echo $bookid ?>">
                             <input type="hidden" name="adminid" value="<?php echo $adminid ?>">
                             <input type="hidden" name="userid" value="<?php echo $frow['userid'] ?>">
@@ -237,7 +358,42 @@ if (!$_SESSION['adminid']) {
         </div>
 
     </div>
+    <script>
+        var installmentType = "<?php echo $frow['installment_type']; ?>";
+    </script>
+    <script src="js/app.js"></script>
     <script src="../user//js/validation.js"></script>
+    <script>
+        tinymce.init({
+            selector: '#itinerary-textarea', // Attach TinyMCE to the textarea with id 'itinerary'
+            plugins: [
+                // Core editing features
+                'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
+                // Your account includes a free trial of TinyMCE premium features
+                // Try the most popular premium features until Oct 2, 2024:
+                'checklist', 'mediaembed', 'casechange', 'export', 'formatpainter', 'pageembed', 'a11ychecker', 'tinymcespellchecker', 'permanentpen', 'powerpaste', 'advtable', 'advcode', 'editimage', 'advtemplate', 'ai', 'mentions', 'tinycomments', 'tableofcontents', 'footnotes', 'mergetags', 'autocorrect', 'typography', 'inlinecss', 'markdown',
+            ],
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+            tinycomments_mode: 'embedded',
+            tinycomments_author: 'Author name',
+            mergetags_list: [{
+                    value: 'First.Name',
+                    title: 'First Name'
+                },
+                {
+                    value: 'Email',
+                    title: 'Email'
+                },
+            ],
+            ai_request: (request, respondWith) => respondWith.string(() => Promise.reject('See docs to implement AI Assistant')),
+            height: 500, // Set height for the editor
+            image_title: true,
+            automatic_uploads: true,
+            file_picker_types: 'image',
+            images_upload_url: 'postAcceptor.php', // Handle image uploads
+            branding: false // Remove "Powered by TinyMCE" branding
+        });
+    </script>
 </body>
 
 </html>

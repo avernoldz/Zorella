@@ -87,8 +87,8 @@ function random_strings($length_of_string)
                     </div>
 
                     <div class="row body">
-
-                        <div class="row w-100" style="justify-content: flex-end;">
+                        <div class="row w-100 flex">
+                            <h1 class="w-700">Requests</h1>
                             <div class="col-2">
                                 <button type="button" style="float:right;" class="btn btn-success" data-toggle="modal"
                                     data-target="#request">
@@ -98,10 +98,6 @@ function random_strings($length_of_string)
                         </div>
 
                         <div class="row w-100">
-                            <div class="col-12 mb-4">
-                                <h1 class="w-700">Requests</h1>
-                            </div>
-
                             <?php
                             $quotation = "SELECT * FROM quotation WHERE userid = '$userid' ORDER BY quotationid DESC";
                             $res = mysqli_query($conn, $quotation);
@@ -233,7 +229,7 @@ function random_strings($length_of_string)
                             ?>
                         </div>
 
-                        <div class="modal" id="request" tabindex="-1" role="dialog" aria-labelledby="requestTitle"
+                        <div class="modal fade" id="request" tabindex="-1" role="dialog" aria-labelledby="requestTitle"
                             aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                                 <div class="modal-content">
@@ -255,8 +251,8 @@ function random_strings($length_of_string)
                                             <div class="col-4 mt-5">
                                                 <label for="branch">Branch</label><label for="" class="required">*</label>
                                                 <select name="branch" class="form-control" id="branch" required>
-                                                    <option selected>Laguna</option>
-                                                    <option>Metro Manila</option>
+                                                    <option selected>Calumpang</option>
+                                                    <option>Calamba</option>
                                                 </select>
                                             </div>
 

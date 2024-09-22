@@ -64,16 +64,20 @@ function uploadFile($file, $target_dir, $adminid)
 if (isset($_POST['tour'])) {
     $title = mysqli_real_escape_string($conn, $_POST['title']);
     $price = mysqli_real_escape_string($conn, $_POST['price']);
+    $type = mysqli_real_escape_string($conn, $_POST['type']);
     $duration = mysqli_real_escape_string($conn, $_POST['duration']);
+    $datesArray = $_POST['dates'];
     $description = mysqli_real_escape_string($conn, $_POST['description']);
     $adminid = mysqli_real_escape_string($conn, $_POST['adminid']);
+    $itinerary = $_POST['itinerary'];
     $img = $_FILES['img'];
 
     // Access the files for each index
     $imgFilename = uploadFile($img, $target_dir, $adminid);
+    $datesJson = json_encode($datesArray);
 
-    $insert = "INSERT INTO `tourpackage`( `title`, `price`, `duration`, `description`, `img`, `adminid`)
-        VALUES ('$title', '$price', '$duration','$description','$imgFilename','$adminid')";
+    $insert = "INSERT INTO `tourpackage`( `title`, `price`, `duration`, `description`, `img`, `dates`, `itinerary`, `type`, `adminid`)
+        VALUES ('$title', '$price', '$duration','$description','$imgFilename', '$datesJson', '$itinerary', '$type', '$adminid')";
 
     if (mysqli_query($conn, $insert)) {
         header("Location: ../tour-package.php?adminid=$adminid");

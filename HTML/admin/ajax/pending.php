@@ -9,15 +9,16 @@ if (isset($_POST["branch"])) {
     u.userid,
     u.firstname,
     u.lastname,
-    b.booking_id,
     b.bookid,
+    b.booking_id,
     b.booking_type,
     b.status,
     b.created_at,
     tb.*,
     eb.sdate,
     eb.pax,
-    eb.hotel
+    eb.hotel,
+    tc.*
     FROM
         booking b
     INNER JOIN
@@ -25,11 +26,13 @@ if (isset($_POST["branch"])) {
     LEFT JOIN
         educational eb ON b.booking_type = 'Educational' AND b.booking_id = eb.educationalid
     LEFT JOIN
+        tourbooking tc ON b.booking_type = 'Tour Package' AND b.booking_id = tc.tour_bookid
+    LEFT JOIN
         ticket tb ON b.booking_id = tb.ticketid
         AND (b.booking_type = 'Ticketed' OR
             b.booking_type = 'Customize')
     WHERE
-        b.status = 'pending' && b.branch = '$branch' ORDER BY b.bookid DESC";
+        b.status = 'Pending' AND b.branch = '$branch' ORDER BY b.bookid DESC";
 
     $res = mysqli_query($conn, $pending);
 
@@ -61,7 +64,7 @@ if (isset($_POST["branch"])) {
                         </div>
                     </div>
                 </a>
-            <?php else: ?>
+            <?php elseif ($row['booking_type'] == 'Educational'): ?>
                 <a href="view-educational.php?adminid=<?php echo "$adminid&bookingid=$row[booking_id]&bookingtype=$row[booking_type]&bookid=$row[bookid]" ?>"
                     class="populate-quote w-100">
                     <div class="row populate-quote">
@@ -79,10 +82,28 @@ if (isset($_POST["branch"])) {
                         </div>
                     </div>
                 </a>
+            <?php else: ?>
+                <a href="view-tour.php?adminid=<?php echo "$adminid&bookingid=$row[booking_id]&bookingtype=$row[booking_type]&bookid=$row[bookid]" ?>"
+                    class="populate-quote w-100">
+                    <div class="row populate-quote">
+                        <div class="col-3">
+                            <label for="" class="w-700">
+                                <?php echo "$row[firstname] $row[lastname]" ?><br>
+                            </label>
+
+                        </div>
+                        <div class="col-8">
+                            <p><?php echo htmlspecialchars($row['tour_title']); ?> <?php echo htmlspecialchars($row['pax']); ?> pax, <?php echo htmlspecialchars($dateFormat1); ?></p>
+                        </div>
+                        <div class="col-1">
+                            <p class="w-700"><?php echo "$dateFormat2" ?></p>
+                        </div>
+                    </div>
+                </a>
             <?php endif; ?>
 <?php
         }
     } else {
-        echo "<div class='text-center col'> No data found</div>";
+        echo "<div class='text-center col'> No booking available</div>";
     }
 }

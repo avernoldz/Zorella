@@ -14,8 +14,8 @@ $rows = mysqli_fetch_array($res);
 
             <div class="col-4 flex">
                 <select name="branch" class="form-control" id="branch">
-                    <option value="Laguna" class="<?php echo $adminid ?>" selected>Laguna</option>
-                    <option value="Metro Manila" class="<?php echo $adminid ?>">Metro Manila</option>
+                    <option value="Calumpang" class="<?php echo $adminid ?>" selected>Calumpang</option>
+                    <option value="Calamba" class="<?php echo $adminid ?>">Calamba</option>
                 </select>
                 <div class="dropdown">
                     <a class="" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true"

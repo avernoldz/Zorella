@@ -1,6 +1,6 @@
 <?php
 
-require __DIR__ . "../../../../vendor/autoload.php";
+require __DIR__ . "../../../vendor/autoload.php";
 
 \Stripe\Stripe::setApiKey('sk_test_51PyxAB06jOG0j2pjskzM6sb0RUFVJPfQrTEvHbfxgnJlpCCYlT4FzffETMPRhP7ifd1TkIy93TvhRtXtOcYdQnZU00wma0vOYx'); // Replace with your Stripe secret key
 

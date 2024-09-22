@@ -48,8 +48,6 @@ if (!$_SESSION['adminid']) {
 
 <body>
 
-
-
     <?php
     $adminid = $_GET['adminid'];
     $active = "Pending Bookings";
@@ -69,8 +67,9 @@ if (!$_SESSION['adminid']) {
     b.created_at,
     tb.*,
     eb.sdate,
-    eb.pax,
-    eb.hotel
+    eb.pax AS ebpax,
+    eb.hotel,
+    tc.*
     FROM
         booking b
     INNER JOIN
@@ -78,11 +77,13 @@ if (!$_SESSION['adminid']) {
     LEFT JOIN
         educational eb ON b.booking_type = 'Educational' AND b.booking_id = eb.educationalid
     LEFT JOIN
+        tourbooking tc ON b.booking_type = 'Tour Package' AND b.booking_id = tc.tour_bookid
+    LEFT JOIN
         ticket tb ON b.booking_id = tb.ticketid
         AND (b.booking_type = 'Ticketed' OR
             b.booking_type = 'Customize')
     WHERE
-        b.status = 'pending' && b.branch = 'Laguna' ORDER BY b.bookid DESC";
+        b.status = 'pending' && b.branch = 'Calumpang' ORDER BY b.bookid DESC";
 
     $res = mysqli_query($conn, $pending);
     ?>
@@ -126,7 +127,7 @@ if (!$_SESSION['adminid']) {
                                         </div>
                                     </div>
                                 </a>
-                            <?php else: ?>
+                            <?php elseif ($row['booking_type'] == 'Educational'): ?>
                                 <a href="view-educational.php?adminid=<?php echo "$adminid&bookingid=$row[booking_id]&bookingtype=$row[booking_type]&bookid=$row[bookid]" ?>"
                                     class="populate-quote w-100">
                                     <div class="row populate-quote">
@@ -137,7 +138,24 @@ if (!$_SESSION['adminid']) {
 
                                         </div>
                                         <div class="col-8">
-                                            <p><?php echo htmlspecialchars($row['hotel']); ?> <?php echo htmlspecialchars($row['pax']); ?> pax, <?php echo htmlspecialchars($dateFormat1); ?></p>
+                                            <p><?php echo htmlspecialchars($row['hotel']); ?> <?php echo htmlspecialchars($row['ebpax']); ?> pax, <?php echo htmlspecialchars($dateFormat1); ?></p>
+                                        </div>
+                                        <div class="col-1">
+                                            <p class="w-700"><?php echo "$dateFormat2" ?></p>
+                                        </div>
+                                    </div>
+                                </a>
+                            <?php else: ?>
+                                <a href="view-tour.php?adminid=<?php echo "$adminid&bookingid=$row[booking_id]&bookingtype=$row[booking_type]&bookid=$row[bookid]" ?>"
+                                    class="populate-quote w-100">
+                                    <div class="row populate-quote">
+                                        <div class="col-3">
+                                            <label for="" class="w-700">
+                                                <?php echo "$row[firstname] $row[lastname]" ?><br>
+                                            </label>
+                                        </div>
+                                        <div class="col-8">
+                                            <p><?php echo htmlspecialchars($row['tour_title']); ?> <?php echo htmlspecialchars($row['pax']); ?> pax, <?php echo htmlspecialchars($dateFormat1); ?></p>
                                         </div>
                                         <div class="col-1">
                                             <p class="w-700"><?php echo "$dateFormat2" ?></p>
@@ -147,6 +165,8 @@ if (!$_SESSION['adminid']) {
                             <?php endif; ?>
                     <?php
                         }
+                    } else {
+                        echo "<div class='text-center col'> No data found</div>";
                     } ?>
                 </div>
             </div>
@@ -155,7 +175,6 @@ if (!$_SESSION['adminid']) {
 
     <script>
         $(document).ready(function() {
-
             var urlA = "ajax/pending.php";
 
             $(document).ajaxSend(function() {
@@ -188,6 +207,7 @@ if (!$_SESSION['adminid']) {
             });
         })
     </script>
+    <script src="js/app.js"></script>
 </body>
 
 </html>

@@ -33,7 +33,6 @@ if (!$_SESSION['userid']) {
         .main .card {
             border-radius: 12px;
             border: 1px solid rgb(0 0 0 / 8%);
-            cursor: pointer;
             transition: 0.5s ease;
             box-shadow: 3px 1px 10px -5px rgba(0, 0, 0, 0.3);
         }
@@ -137,7 +136,7 @@ if (!$_SESSION['userid']) {
                 <div class="col body">
                     <div class="row">
                         <div class="col-12 body" style="background-color: var(--main-300);color: white;">
-                            <h4><i class="fa-solid fa-plane"></i> Tour Packages</h4>
+                            <h4>Tour Packages</h4>
                         </div>
                     </div>
 
@@ -159,8 +158,8 @@ if (!$_SESSION['userid']) {
                                             <p class="card-text"><?php echo "$row[description]" ?></p>
                                             <hr>
                                             <div class="flex">
-                                                <h6 class="price w-700">&#x20B1; <?php echo "$row[price]" ?></h6>
-                                                <a href="#" class="btn btn-primary book-btn">Book Now <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+                                                <h6 class="price w-700">&#x20B1; <?php echo number_format($row['price'], 0) ?><label for="" style="font-size:12px;">/pax</label></h6>
+                                                <a href="view-package.php?packageid=<?php echo "$row[tourid]&userid=$userid" ?>" class="btn btn-primary book-btn">More info <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
                                             </div>
                                         </div>
                                     </div>

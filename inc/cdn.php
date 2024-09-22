@@ -23,5 +23,15 @@
 <!-- Tables -->
 
 <link rel="stylesheet" href="https://cdn.datatables.net/2.1.6/css/dataTables.dataTables.css" />
-
 <script src="https://cdn.datatables.net/2.1.6/js/dataTables.js"></script>
+
+<!-- DataTables Buttons JS and Extensions -->
+<script src="https://cdn.datatables.net/buttons/3.1.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/3.1.2/js/buttons.dataTables.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/3.1.2/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/3.1.2/js/buttons.print.min.js"></script>
+
+<script src="https://cdn.tiny.cloud/1/ogbra9mjiyzmaexzehl0788mvowvxjr48ehixh8wgl11walu/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>

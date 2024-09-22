@@ -1,21 +1,19 @@
 <?php
 
-//Import PHPMailer classes into the global namespace
-//These must be at the top of your script, not inside a function
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
+use Dompdf\Dompdf;
 
-//required files
-require '../../vendor/phpmailer/phpmailer/src/Exception.php';
-require '../../vendor/phpmailer/phpmailer/src/PHPMailer.php';
-require '../../vendor/phpmailer/phpmailer/src/SMTP.php';
+// Require necessary files
+require '../../vendor/autoload.php'; // For Dompdf
 include "../../inc/Include.php";
 
-//Create an instance; passing `true` enables exceptions
+// Create an instance; passing `true` enables exceptions
 if (isset($_POST["submit"])) {
-
     $mail = new PHPMailer(true);
+    $dompdf = new Dompdf();
 
+    // Collect data from POST
     $total = $_POST['total'];
     $inclusions = $_POST['inclusions'];
     $exclusions = $_POST['exclusions'];
@@ -24,6 +22,7 @@ if (isset($_POST["submit"])) {
     $adminid = $_POST['adminid'];
     $id = $_POST['id'];
 
+    // Fetch quotation details
     $quotation = "SELECT *, quotation.email as email2, DATE(date) AS date FROM quotation INNER JOIN user ON quotation.userid = user.userid WHERE quotation.quotationid = '$id'";
     $quotationResults = mysqli_query($conn, $quotation);
     $quotationRows = mysqli_fetch_assoc($quotationResults);
@@ -31,62 +30,22 @@ if (isset($_POST["submit"])) {
     $date = date_create("$quotationRows[date]");
     $dateFormat = date_format($date, "F d, Y");
 
-    $body = '';
-    $body .= "
+    // Create HTML for PDF
+    $body = "
     <!DOCTYPE html>
     <html lang='en'>
-
     <head>
         <meta charset='UTF-8'>
         <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-        <?php include '../Connections/cdn.php'?>
         <title>Quotation</title>
         <style>
             body {
                 font-family: 'Inter', sans-serif !important;
-                color: var(--font);
-                padding: 48px;
-            }
-    
-            .row.populate-quote {
-                background: var(--sub);
-                padding: 8px;
-                border-radius: 4px;
-                margin-bottom: 8px;
-            }
-    
-            .col.case .table>tbody>tr>td {
-                border: none;
-                border-bottom: 1px solid #ddd;
-            }
-    
-            label {
-                margin: 0;
-            }
-    
-            .main .row.frame-quote .total {
-                border: none;
-                border-bottom: 1px solid #ddd;
-                width: 11%;
-            }
-    
-            .main .row.frame-quote .total:focus,
-            .main .row.frame-quote .clusions:focus {
-                outline: none;
-            }
-    
-            .main .row.frame-quote .clusions {
-                padding: 8px;
-                border: none;
-                border-left: 1px solid #ddd;
-            }
-
-            .main{
-                width: 80%;
+                color: #333;
+                font-size: 14px;
             }
         </style>
     </head>
-    
     <body>
         <div class='main'>
             <div class='row bkq '>
@@ -94,46 +53,36 @@ if (isset($_POST["submit"])) {
                     <div class='row frame-quote w-100'>
                         <div class='col-12'>
                             <div style='text-align:center;'>
-                                <p class='text-center'><strong>ZORELLA TRAVEL AND TOURS</strong> <br>
-                                    CALUMPANG LILIW LAGUNA <br>
-                                    Laguna, Philippines 4004 <br>
-                                    +639237374423 <br>
+                                <p class='text-center'><strong>ZORELLA TRAVEL AND TOURS</strong><br>
+                                    CALUMPANG LILIW LAGUNA<br>
+                                    Laguna, Philippines 4004<br>
+                                    +639237374423<br>
                                     zorellatravelandtours@gmail.com
                                 </p>
+                                <br>
                             </div>
                             <p>
-                                Clients Name: <strong>$quotationRows[firstname] $quotationRows[lastname]</strong> <br>
-                                
-                                Quotation Title: <strong>$quotationRows[title]</strong> <br>
-                                
-                                Date of Travel: <strong>$dateFormat</strong> <br>
-                              
-                                Number of Pax: <strong>$quotationRows[pax]</strong> <br>
+                                Clients Name: <strong>$quotationRows[firstname] $quotationRows[lastname]</strong><br>
+                                Quotation Title: <strong>$quotationRows[title]</strong><br>
+                                Date of Travel: <strong>$dateFormat</strong><br>
+                                Number of Pax: <strong>$quotationRows[pax]</strong><br>
                             </p>
                             <hr class='mb-3 mt-3'>
                             <strong><p>Dear Valued Client,</p></strong>
-                            <p>Please see below quotation for your perusal. <br>
+                            <p>Please see below quotation for your perusal.<br>
                                 The rate below is subject to change without prior notice.
                             </p>
     
                             <div style='border:2px solid black;padding:16px;text-align:center;'>
-                                <strong>P
-                                $total
-                                /PAX <br>
+                                <strong>$total / PAX<br>
                                 ALL IN PACKAGE</strong>
                             </div>
-                            <strong><p >HOTEL: <label class='ml-5'>3* or Similar Class</label></p></strong>
-                            <strong><p class='mt-3 w-700'>
-                                INCLUSIONS:
-                            </p></strong>
+                            <strong><p>HOTEL: <label class='ml-5'>3* or Similar Class</label></p></strong>
+                            <strong><p class='mt-3 w-700'>INCLUSIONS:</p></strong>
                             <p style='white-space: pre-wrap;'>$inclusions</p>
-                            <p class='mt-3 w-700'>
-                                <strong>EXCLUSIONS:</strong>
-                            </p>
-                            <p style='white-space: pre-wrap;'> $exclusions</p>
-                            <p class='mt-3 w-700'>
-                                <strong>Itinerary:</strong>
-                            </p>
+                            <p class='mt-3 w-700'><strong>EXCLUSIONS:</strong></p>
+                            <p style='white-space: pre-wrap;'>$exclusions</p>
+                            <p class='mt-3 w-700'><strong>Itinerary:</strong></p>
                             <p style='white-space: pre-wrap;'>$itinerary</p>
                             <p><strong>REMARKS</strong></p>
                             <p style='white-space: pre-wrap;'>$remarks</p>
@@ -151,42 +100,54 @@ if (isset($_POST["submit"])) {
             </div>
         </div>
     </body>
-    
     </html>";
 
-    //Server settings
+    // Load HTML into Dompdf
+    $dompdf->loadHtml($body);
+
+    // Set paper size and orientation
+    $dompdf->setPaper('A4', 'portrait');
+
+    // Render the HTML as PDF
+    $dompdf->render();
+
+    $date = date('Ymds');
+    // Output the generated PDF to a file
+    $pdfOutput = $dompdf->output();
+
+    $pdfFilePath = 'quotation/' . $quotationRows['firstname'] . $quotationRows['lastname'] . $date . '.pdf'; // Adjust the path as needed
+    file_put_contents($pdfFilePath, $pdfOutput);
+
+    // Email settings
     $mail->CharSet = 'UTF-8';
-    $mail->isSMTP();                              //Send using SMTP
-    $mail->Host       = 'smtp.gmail.com';       //Set the SMTP server to send through
-    $mail->SMTPAuth   = true;             //Enable SMTP authentication
-    $mail->Username   = 'gremoryyxx@gmail.com';   //SMTP write your email
-    $mail->Password   = 'ioslrvtwplqqgyum';      //SMTP password
-    $mail->SMTPSecure = 'ssl';            //Enable implicit SSL encryption
+    $mail->isSMTP();
+    $mail->Host       = 'smtp.gmail.com';
+    $mail->SMTPAuth   = true;
+    $mail->Username   = 'gremoryyxx@gmail.com';
+    $mail->Password   = 'ioslrvtwplqqgyum'; // Your SMTP password
+    $mail->SMTPSecure = 'ssl';
     $mail->Port       = 465;
 
-    //Recipients
-    $mail->setFrom('gremoryyxx@gmail.com', 'Zorella Travel and Tours'); // Sender Email and name
-    $mail->addAddress($quotationRows['email2']);     //Add a recipient email
-    $mail->addReplyTo('gremoryyxx@gmail.com', 'Zorella Travel and Tours'); // reply to sender email
+    // Recipients
+    $mail->setFrom('gremoryyxx@gmail.com', 'Zorella Travel and Tours');
+    $mail->addAddress($quotationRows['email2']);
+    $mail->addReplyTo('gremoryyxx@gmail.com', 'Zorella Travel and Tours');
 
-    //Content
-    $mail->isHTML(true);               //Set email format to HTML
-    $mail->Subject = "Quotation for " . $quotationRows['title'];   // email subject headings
-    $mail->MsgHTML($body);
-    // $mail->Body    = $_POST["message"]; //email message
+    // Email content
+    $mail->isHTML(true);
+    $mail->Subject = "Quotation for " . $quotationRows['title'];
+    $mail->Body    = "Please find attached the quotation PDF.";
 
-    // Success sent message alert
-    $mail->send();
-    if ($mail->isError()) {
-        echo "Mailer Error: " . $mail->ErrorInfo;
+    // Attach PDF file
+    $mail->addAttachment($pdfFilePath);
+
+    // Send email
+    if ($mail->send()) {
+        header("Location: view-quotation.php?adminid=$adminid&qoute=$id");
+        // Optionally update the database
+        $query = "UPDATE quotation SET status = 'Sent' WHERE quotationid = $id";
+        mysqli_query($conn, $query);
     } else {
-
-        $query = "UPDATE quotation SET status = 'Sent'";
-        if (mysqli_query($conn, $query)) {
-            header("Location: view-quotation.php?adminid=$adminid&qoute=$id");
-            exit();
-        } else {
-            echo mysqli_error($conn);
-        }
-    };
+        echo "Mailer Error: " . $mail->ErrorInfo;
+    }
 }

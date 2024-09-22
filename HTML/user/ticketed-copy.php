@@ -69,8 +69,8 @@ if (!$_SESSION['userid']) {
                             <label for="branch">Branch</label><label for="" class="required">*</label>
                             <select name="branch" class="form-control" id="branch" required>
                                 <option>Select Branch</option>
-                                <option>Laguna</option>
-                                <option>Metro Manila</option>
+                                <option>Calumpang</option>
+                                <option>Calumpang</option>
                             </select>
                         </div>
 

@@ -126,3 +126,8 @@ a {
 .fade-in.visible {
   opacity: 1;
 }
+
+p {
+  margin: 0;
+  padding: 0;
+}

@@ -5,7 +5,7 @@ session_regenerate_id();
 $successMessage = isset($_SESSION['paid']) ? $_SESSION['paid'] : '';
 
 if (!$_SESSION['userid']) {
-    header("Location:index.php?login-first");
+    header("Location:../index.php?login-first");
 }
 
 function random_strings($length_of_string)
@@ -72,6 +72,11 @@ function random_strings($length_of_string)
         .modal p {
             font-size: 14px;
         }
+
+        .row.populate-quote.w-100.Payment {
+            background: var(--main-500);
+            color: white;
+        }
     </style>
 </head>
 
@@ -81,36 +86,53 @@ function random_strings($length_of_string)
     $userid = $_GET['userid'];
     $active = "";
     include "../../inc/Include.php";
+    include "inc/select.php";
     include "side-bar.php";
     include "header.php";
 
-    $query = "SELECT
-    u.userid,
-    u.firstname,
-    u.lastname,
-    b.bookid,
-    b.booking_id,
-    b.booking_type,
-    b.status AS stat,
-    b.branch AS branchs,
-    b.created_at AS date_created,
-    tb.*,
-    eb.*,
-    eb.created_at AS date_eb
-    FROM
-        booking b
-    INNER JOIN
-        user u ON b.userid = u.userid
-    LEFT JOIN
-        educational eb ON b.booking_type = 'Educational' AND b.booking_id = eb.educationalid
-    LEFT JOIN
-        ticket tb ON b.booking_id = tb.ticketid
-        AND (b.booking_type = 'Ticketed' OR
-            b.booking_type = 'Customize')
-    WHERE
-        u.userid = '$userid' ORDER BY b.bookid DESC";
+    // $query = "SELECT
+    // u.userid,
+    // u.firstname,
+    // u.lastname,
+    // b.bookid,
+    // b.booking_id,
+    // b.booking_type,
+    // b.status AS stat,
+    // b.branch AS branchs,
+    // b.created_at AS date_created,
+    // tb.*,
+    // eb.*,
+    // eb.pax AS eb_pax,
+    // eb.created_at AS date_eb,
+    // tc.*,
+    // tp.*,
+    // pt.confirmation_pdf,
+    // pt.payment_id,
+    // p.paymentid,
+    // pt.paymentinfoid
+    // FROM
+    //     booking b
+    // INNER JOIN
+    //     user u ON b.userid = u.userid
+    // LEFT JOIN
+    //     educational eb ON b.booking_type = 'Educational' AND b.booking_id = eb.educationalid
+    // LEFT JOIN
+    //     tourbooking tc ON b.booking_type = 'Tour Package' AND b.booking_id = tc.tour_bookid
+    // LEFT JOIN
+    //     tourpackage tp ON tc.tourid = tp.tourid
+    // LEFT JOIN
+    //     payment p ON p.booking_id = b.booking_id
+    // LEFT JOIN
+    //     paymentinfo pt ON pt.payment_id = p.paymentid
+    // LEFT JOIN
+    //     ticket tb ON b.booking_id = tb.ticketid
+    //     AND (b.booking_type = 'Ticketed' OR b.booking_type = 'Customize')
+    // WHERE
+    //     u.userid = '$userid'
+    // ORDER BY
+    //     b.bookid DESC";
 
-    $res = mysqli_query($conn, $query);
+    // $res = mysqli_query($conn, $query);
 
     ?>
     <div class="main">
@@ -130,8 +152,8 @@ function random_strings($length_of_string)
                     <div class="row body">
                         <div class="row w-100">
                             <?php
-                            if (mysqli_num_rows($res) > 0) {
-                                while ($row = mysqli_fetch_array($res)) {
+                            if (!empty($allResults)) {
+                                foreach ($allResults as $row) {
                                     $dateFormats = [
                                         'departure' => 'M d, Y',
                                         'arrival' => 'M d, Y',
@@ -139,6 +161,7 @@ function random_strings($length_of_string)
                                         'edate' => 'M d, Y',
                                         'dateCreated' => 'M d, Y : h:i A',
                                         'date_created' => 'M d, y',
+                                        'tour_date' => 'M d, Y',
                                         'date_eb' => 'M d, Y : h:i A'
                                     ];
 
@@ -152,17 +175,12 @@ function random_strings($length_of_string)
                                         }
                                     }
 
-                                    // // Debugging output
-                                    // echo '<pre>';
-                                    // print_r($row);
-                                    // echo '</pre>';
-
                                     $rand = random_strings(5);
-                                    $total = $row['adult'] + $row['child'] + $row['infant'] + $row['senior'];
 
                             ?>
 
                                     <?php if ($row['booking_type'] == 'Customize' || $row['booking_type'] == 'Ticketed'): ?>
+                                        <?php $total = $row['adult'] + $row['child'] + $row['infant'] + $row['senior']; ?>
                                         <div class="row populate-quote w-100" data-toggle="modal" data-target="<?php echo "#$rand" ?>">
                                             <div class="col-3">
                                                 <label for="" class="w-700">
@@ -287,7 +305,7 @@ function random_strings($length_of_string)
                                             </div>
                                         </div>
 
-                                    <?php else: ?>
+                                    <?php elseif ($row['booking_type'] == 'Educational'): ?>
                                         <div class="row populate-quote w-100" data-toggle="modal" data-target="<?php echo "#$rand" ?>">
                                             <div class="col-3">
                                                 <label for="" class="w-700">
@@ -295,7 +313,7 @@ function random_strings($length_of_string)
                                                 </label>
                                             </div>
                                             <div class="col-8">
-                                                <p><?php echo htmlspecialchars($row['hotel']); ?> <?php echo htmlspecialchars($row['pax']); ?> pax, <?php echo htmlspecialchars($row['sdate']); ?></p>
+                                                <p><?php echo htmlspecialchars($row['hotel']); ?> <?php echo htmlspecialchars($row['eb_pax']); ?> pax, <?php echo htmlspecialchars($row['sdate']); ?></p>
                                             </div>
                                             <div class="col-1">
                                                 <p class="w-700"><?php echo htmlspecialchars($row['date_created']) ?></p>
@@ -330,7 +348,7 @@ function random_strings($length_of_string)
                                                             <?php endif; ?>
                                                             <tr>
                                                                 <td>Pax</td>
-                                                                <td class="w-700"><?php echo htmlspecialchars($row['pax']) ?></td>
+                                                                <td class="w-700"><?php echo htmlspecialchars($row['eb_pax']) ?></td>
                                                             </tr>
                                                             <?php if (!empty($row['attraction'])): ?>
                                                                 <tr>
@@ -370,9 +388,91 @@ function random_strings($length_of_string)
                                                 </div>
                                             </div>
                                         </div>
+                                    <?php else: ?>
+                                        <div class="row populate-quote w-100 <?php if ($row['stat'] == 'Payment') {
+                                                                                    echo $row['stat'];
+                                                                                } ?>" data-toggle="modal" data-target="<?php echo "#$rand" ?>">
+                                            <div class="col-3">
+                                                <label for="" class="w-700">
+                                                    <?php echo "Tour Package" ?><br>
+                                                </label>
+                                            </div>
+                                            <div class="col-8">
+                                                <p><?php echo htmlspecialchars($row['tour_title']); ?> <?php echo htmlspecialchars($row['pax']); ?> pax, <?php echo htmlspecialchars($row['tour_date']); ?></p>
+                                            </div>
+                                            <div class="col-1">
+                                                <p class="w-700"><?php echo htmlspecialchars($row['date_created']) ?></p>
+                                            </div>
+                                        </div>
+
+                                        <div class="modal" id="<?php echo $rand ?>" tabindex="-1" aria-labelledby="<?php echo $rand ?>Label" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title w-700 ml-3" id="<?php echo $rand ?>Label">Booking Information</h5>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <table class="table table-borderless">
+                                                            <tr>
+                                                                <td>Branch</td>
+                                                                <td class="w-700"><?php echo htmlspecialchars($row['branchs']) ?></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Tour Title</td>
+                                                                <td class="w-700"><?php echo htmlspecialchars($row['tour_title']) ?></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Days</td>
+                                                                <td class="w-700"><?php echo htmlspecialchars($row['duration']) ?></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Pax</td>
+                                                                <td class="w-700"><?php echo htmlspecialchars($row['pax']) ?></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Date</td>
+                                                                <td class="w-700"><?php echo htmlspecialchars($row['tour_date']) ?></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Status</td>
+                                                                <td class="w-700">
+                                                                    <?php
+                                                                    if ($row['stat'] == 'Pending') {
+                                                                        echo "<span class='text-warning'>Pending</span>";
+                                                                    } else if ($row['stat'] == 'Payment') {
+                                                                        echo "<span class='text-info'>Confirmed Booking, waiting for payment</span>";
+                                                                    } else {
+                                                                        echo "<span class='text-success'>Paid</span>";
+                                                                    }
+                                                                    ?>
+                                                                </td>
+                                                            </tr>
+                                                            <?php if ($row['stat'] == 'Payment'): ?>
+                                                                <tr>
+                                                                    <td style="vertical-align:middle;">Confirmation</td>
+                                                                    <td class="w-700"><?php echo "<a style='font-size: 12px;' class='btn btn-sm btn-success' href='../admin/confirmation-bookings/$row[confirmation_pdf]' target='_blank'>Download Confirmation Booking</a>" ?></td>
+                                                                </tr>
+                                                            <?php endif; ?>
+                                                            <?php if ($row['stat'] == 'Payment'): ?>
+                                                                <tr>
+                                                                    <td>Payment</td>
+                                                                    <td class="w-700"><?php echo "<a style='font-size: 12px;' class='btn btn-sm btn-danger' href='../payment/stripe-checkout.php?payment_id=$row[paymentinfoid]&userid=$row[userid]'>Pay Here</a>" ?></td>
+                                                                </tr>
+                                                            <?php endif; ?>
+                                                        </table>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                     <?php endif; ?>
                             <?php
                                 }
+                            } else {
+                                echo "<p class='text-center w-100'>No bookings available. Book now!</p>";
                             }
                             ?>
 
