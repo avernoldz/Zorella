@@ -84,6 +84,8 @@ if (isset($_POST['personal'])) {
     $valid_ids = $_FILES['valid-id'];
     $ticketid = $_POST['ticketid'];
 
+    $booking_type = $_SESSION['booking_type'];
+
 
     for ($i = 0; $i < count($firstnames); $i++) {
         $number = $numbers[$i];
@@ -126,8 +128,8 @@ if (isset($_POST['personal'])) {
             $validIdFilename = null; // Handle case where no file was uploaded
         }
 
-        $insert = "INSERT INTO `personalinfo`( `number`, `address`, `email`, `lastname`, `firstname`, `middlename`, `age`, `bdate`, `sex`, `civil`, `passport`, `validid`, `ticketid`, `userid`)
-        VALUES ('$number', '$address', '$email','$lastname','$firstname','$middlename','$age','$bdate','$sex','$civil','$passportFilename', '$validIdFilename','$ticketid', '$userid')";
+        $insert = "INSERT INTO `personalinfo`( `number`, `address`, `email`, `lastname`, `firstname`, `middlename`, `age`, `bdate`, `sex`, `civil`, `passport`, `validid`, `ticketid`, `booking_type`, `userid`)
+        VALUES ('$number', '$address', '$email','$lastname','$firstname','$middlename','$age','$bdate','$sex','$civil','$passportFilename', '$validIdFilename','$ticketid', '$booking_type', '$userid')";
 
         if (mysqli_query($conn, $insert)) {
             $lastInsertedId = mysqli_insert_id($conn);

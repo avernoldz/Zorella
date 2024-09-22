@@ -109,12 +109,6 @@ html {
 }
 
 /* Infinite Slide */
-.gallery {
-  overflow: hidden;
-  padding: 24px 0;
-  white-space: nowrap;
-  position: relative;
-}
 
 /* .slide::before,
 .slide::after {
@@ -135,6 +129,13 @@ html {
   background: linear-gradient(to right, rgba(255, 255, 255, 0), white);
   right: 0;
 } */
+
+.gallery {
+  overflow: hidden;
+  padding: 24px 0;
+  white-space: nowrap;
+  position: relative;
+}
 
 .gallery .slide-gallery {
   display: inline-block;

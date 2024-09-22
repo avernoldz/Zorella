@@ -168,10 +168,53 @@ if (!$_SESSION['userid']) {
     include "side-bar.php";
     include "header.php";
     $booking_id = $_SESSION['booking_id'];
-    $query = "SELECT * FROM ticket where ticketid = '$booking_id'";
-    $res = mysqli_query($conn, $query);
-    $row = mysqli_fetch_array($res);
+    $booking_type = $_SESSION['booking_type'];
+
+    $table_map = [
+        'Ticketed' => 'ticket',
+        'Customize' => 'ticket',
+        'Educational' => 'educational',
+    ];
+
+    $table_name = $table_map[$booking_type] ?? 'tourbooking';
+
+    function getPrimaryKey($table_name, $conn)
+    {
+        $query = "SHOW KEYS FROM $table_name WHERE Key_name = 'PRIMARY'";
+        $stmt = $conn->prepare($query);
+        $stmt->execute();
+
+        $result = $stmt->get_result();
+        return $result->fetch_assoc()['Column_name'] ?? null; // No argument in fetch_assoc
+    }
+
+    function getEducationalDetails($table_name, $booking_id, $conn)
+    {
+        // Get the primary key for the table
+        $primary_key = getPrimaryKey($table_name, $conn);
+
+        if (!$primary_key) {
+            throw new Exception("No primary key found for table $table_name.");
+        }
+
+        // Prepare the SQL query using the primary key
+        $query = "SELECT b.branch, e.* 
+                  FROM $table_name e 
+                  INNER JOIN booking b 
+                  ON b.booking_id = e.$primary_key 
+                  WHERE e.$primary_key = ?";
+
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param('s', $booking_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        return $result->fetch_assoc(); // Fetch the single row directly
+    }
+
+    $row = getEducationalDetails($table_name, $booking_id, $conn);
     ?>
+
     <form action="inc/payment.php" style="width: 100%;" class="needs-validation" method="POST" novalidate>
         <?php
 
@@ -295,88 +338,146 @@ if (!$_SESSION['userid']) {
                         </div>
                     </div>
 
-                    <div class="row body">
-                        <div class="col-4">
-                            <label for="branch">Branch</label>
-                            <input type="text" class="form-control" id="branch" value="<?php echo $row['branch'] ?>" readonly>
-                        </div>
-
-                        <div class="col-4">
-                            <label for="flighttype">Flight Type</label>
-                            <input type="text" class="form-control" id="flighttype" value="<?php echo $row['flighttype'] ?>" readonly>
-                        </div>
-
-                        <div class="col-4">
-                            <label for="tickettype">Ticket Type</label>
-                            <input type="text" class="form-control" id="tickettype" value="<?php echo $row['tickettype'] ?>" readonly>
-                        </div>
-
-                        <div class="row mt-4 wd-100">
+                    <?php if ($booking_type == 'Ticketed' || $booking_type == 'Customize'): ?>
+                        <div class="row body">
                             <div class="col-4">
-                                <label for="origin">Origin</label>
-                                <input type="text" class="form-control" id="origin" value="<?php echo $row['origin'] ?>" readonly>
+                                <label for="branch">Branch</label>
+                                <input type="text" class="form-control" id="branch" value="<?php echo $row['branch'] ?>" readonly>
                             </div>
-                            <div class="col-4">
-                                <label for="destination">Destination</label>
-                                <input type="text" class="form-control" id="destination" value="<?php echo $row['destination'] ?>" readonly>
-                            </div>
-                            <div class="col-4">
-                                <label for="classtype">Class Type</label>
-                                <input type="text" class="form-control" id="classtype" value="<?php echo $row['classtype'] ?>" readonly>
-                            </div>
-                        </div>
 
-                        <div class="row mt-4 wd-100">
                             <div class="col-4">
-                                <label for="departure">Departure</label>
-                                <input type="text" class="form-control" id="departure" value="<?php echo $row['departure'] ?>" readonly>
+                                <label for="flighttype">Flight Type</label>
+                                <input type="text" class="form-control" id="flighttype" value="<?php echo $row['flighttype'] ?>" readonly>
                             </div>
-                            <?php if ($row['arrival'] == 0000 - 00 - 00): ?>
-                                <div class="col-4 arrival-container">
-                                    <label for="arrival">Arrival</label>
-                                    <input type="text" class="form-control" id="arrival" value="<?php echo $row['arrival'] ?>" readonly>
+
+                            <div class="col-4">
+                                <label for="tickettype">Ticket Type</label>
+                                <input type="text" class="form-control" id="tickettype" value="<?php echo $row['tickettype'] ?>" readonly>
+                            </div>
+
+                            <div class="row mt-4 wd-100">
+                                <div class="col-4">
+                                    <label for="origin">Origin</label>
+                                    <input type="text" class="form-control" id="origin" value="<?php echo $row['origin'] ?>" readonly>
                                 </div>
-                            <?php endif; ?>
-                            <div class="col-4">
-                                <label for="directflight">Direct Flight</label>
-                                <input type="text" class="form-control" id="directflight" value="<?php echo $row['directflight'] ?>" readonly>
-                            </div>
-                        </div>
-
-                        <div class="row mt-4 wd-100">
-                            <div class="col-2">
-                                <label for="adult">Adult</label>
-                                <input type="text" class="form-control" id="adult" value="<?php echo $row['adult'] ?>" readonly>
-
+                                <div class="col-4">
+                                    <label for="destination">Destination</label>
+                                    <input type="text" class="form-control" id="destination" value="<?php echo $row['destination'] ?>" readonly>
+                                </div>
+                                <div class="col-4">
+                                    <label for="classtype">Class Type</label>
+                                    <input type="text" class="form-control" id="classtype" value="<?php echo $row['classtype'] ?>" readonly>
+                                </div>
                             </div>
 
-                            <?php if (!empty($row['child'])): ?>
+                            <div class="row mt-4 wd-100">
+                                <div class="col-4">
+                                    <label for="departure">Departure</label>
+                                    <input type="text" class="form-control" id="departure" value="<?php echo $row['departure'] ?>" readonly>
+                                </div>
+                                <?php if (!$row['arrival'] == 0000 - 00 - 00): ?>
+                                    <div class="col-4 arrival-container">
+                                        <label for="arrival">Arrival</label>
+                                        <input type="text" class="form-control" id="arrival" value="<?php echo $row['arrival'] ?>" readonly>
+                                    </div>
+                                <?php endif; ?>
+                                <div class="col-4">
+                                    <label for="directflight">Direct Flight</label>
+                                    <input type="text" class="form-control" id="directflight" value="<?php echo $row['directflight'] ?>" readonly>
+                                </div>
+                            </div>
+
+                            <div class="row mt-4 wd-100">
                                 <div class="col-2">
-                                    <label for="child">Child</label>
-                                    <input type="text" class="form-control" id="child" value="<?php echo $row['child'] ?>" readonly>
-                                </div>
-                            <?php endif; ?>
+                                    <label for="adult">Adult</label>
+                                    <input type="text" class="form-control" id="adult" value="<?php echo $row['adult'] ?>" readonly>
 
-                            <?php if (!empty($row['infant'])): ?>
-                                <div class="col-2">
-                                    <label for="infant">Infant</label>
-                                    <input type="text" class="form-control" id="infant" value="<?php echo $row['infant'] ?>" readonly>
                                 </div>
-                            <?php endif; ?>
 
-                            <?php if (!empty($row['senior'])): ?>
-                                <div class="col-2">
-                                    <label for="senior">Senior</label>
-                                    <input type="text" class="form-control" id="senior" value="<?php echo $row['senior'] ?>" readonly>
-                                </div>
-                            <?php endif; ?>
+                                <?php if (!empty($row['child'])): ?>
+                                    <div class="col-2">
+                                        <label for="child">Child</label>
+                                        <input type="text" class="form-control" id="child" value="<?php echo $row['child'] ?>" readonly>
+                                    </div>
+                                <?php endif; ?>
+
+                                <?php if (!empty($row['infant'])): ?>
+                                    <div class="col-2">
+                                        <label for="infant">Infant</label>
+                                        <input type="text" class="form-control" id="infant" value="<?php echo $row['infant'] ?>" readonly>
+                                    </div>
+                                <?php endif; ?>
+
+                                <?php if (!empty($row['senior'])): ?>
+                                    <div class="col-2">
+                                        <label for="senior">Senior</label>
+                                        <input type="text" class="form-control" id="senior" value="<?php echo $row['senior'] ?>" readonly>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+
+                            <div class="col-4 mt-4 mb-3">
+                                <label for="airline">Airline</label>
+                                <input type="text" class="form-control" id="airline" value="<?php echo $row['airline'] ?>" readonly>
+                            </div>
                         </div>
+                    <?php elseif ($booking_type == 'Educational'): ?>
+                        <div class="row body">
+                            <div class="col-6 mb-4">
+                                <label for="branch">Branch</label>
+                                <input type="text" class="form-control" id="branch" value="<?php echo $row['branch'] ?>" readonly>
+                            </div>
+                            <div class="w-100"></div>
+                            <div class="col-4">
+                                <label for="flighttype">Start Date</label>
+                                <input type="text" class="form-control" value="<?php echo $row['sdate'] ?>" readonly>
+                            </div>
 
-                        <div class="col-4 mt-4 mb-3">
-                            <label for="airline">Airline</label>
-                            <input type="text" class="form-control" id="airline" value="<?php echo $row['airline'] ?>" readonly>
+                            <div class="col-4">
+                                <label for="tickettype">End Date</label>
+                                <input type="text" class="form-control" value="<?php echo $row['edate'] ?>" readonly>
+                            </div>
+
+                            <div class="row mt-4 wd-100">
+                                <?php if (!empty($row['hotel'])): ?>
+                                    <div class="col-4">
+                                        <label for="destination">Hotel</label>
+                                        <input type="text" class="form-control" value="<?php echo $row['hotel'] ?>" readonly>
+
+                                    </div>
+                                <?php endif; ?>
+                                <?php if (!empty($row['attraction'])): ?>
+                                    <div class="col-4">
+                                        <label for="classtype">Attraction</label>
+                                        <input type="text" class="form-control" i value="<?php echo $row['attraction'] ?>" readonly>
+
+                                    </div>
+                                <?php endif; ?>
+                                <div class="col-4">
+                                    <label for="destination">Pax</label>
+                                    <input type="text" class="form-control" value="<?php echo $row['pax'] ?>" readonly>
+                                </div>
+
+
+                            </div>
                         </div>
-                    </div>
+                    <?php elseif ($booking_type == 'Tour Package'): ?>
+                        <div class="row body">
+                            <div class="col-8 mb-4">
+                                <label for="branch">Tour Title</label>
+                                <input type="text" class="form-control" id="branch" value="<?php echo $row['tour_title'] ?>" readonly>
+                            </div>
+                            <div class="w-100"></div>
+                            <div class="col-6 mb-4">
+                                <label for="branch">Branch</label>
+                                <input type="text" class="form-control" id="branch" value="<?php echo $row['branch'] ?>" readonly>
+                            </div>
+                            <div class="col-4">
+                                <label for="flighttype">Pax</label>
+                                <input type="text" class="form-control" value="<?php echo $row['pax'] ?>" readonly>
+                            </div>
+                        </div>
+                    <?php endif; ?>
                 </div>
 
                 <div class="col body">
@@ -418,7 +519,7 @@ if (!$_SESSION['userid']) {
                                             </label>
                                         </div>
 
-                                        <input type="radio" name="installment_type" id="monthly" value="Monthly">
+                                        <input type="radio" name="installment_type" id="monthly" value="Bimonthly">
                                         <input type="radio" name="installment_type" id="quarterly" value="Quarterly">
                                         <!-- New div for additional payment options -->
                                         <div class="additional-options row w-100 mt-2" style="display: none;">
@@ -435,7 +536,7 @@ if (!$_SESSION['userid']) {
                                                 <label class="monthlyPayment" for="monthly">
                                                     <div class="imgName">
                                                         <i class="fa-solid fa-calendar-month fa-fw"></i>
-                                                        <span class="name">Monthly Payment</span>
+                                                        <span class="name">Bimonthly Payment</span>
                                                     </div>
                                                     <span class="check"><i class="fa-solid fa-circle-check" style="color: var(--maindark);"></i></span>
                                                 </label>

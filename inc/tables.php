@@ -15,14 +15,58 @@
 
 	$paymentinfo = "CREATE TABLE paymentinfo(
 		paymentinfoid int(100) AUTO_INCREMENT PRIMARY KEY,
-		bookid varchar(50) NOT NULL,
-		price DECIMAL(20, 2) NOT NULL,
+		payment_id int(100) NOT NULL,
+		total_price DECIMAL(20, 2) NOT NULL,
+		downpayment DECIMAL(20, 2) NOT NULL,
+		price_to_pay DECIMAL(20, 2) NOT NULL,
+		remaining_balance DECIMAL(20, 2) NOT NULL,
+		pax_price DECIMAL(20, 2) NOT NULL,
+		installment_number int(10) NOT NULL,
+		due_date TEXT,
+		paid_date TIMESTAMP NULL,
+		terms TEXT,
+		confirmation_pdf varchar(150) NULL,
+		payment_pdf varchar(150) NULL,
 		adminid int(200) NOT NULL,
 		userid int(200) NOT NULL
 		)";
 
 	if (mysqli_query($conn, $paymentinfo)) {
 		echo "Table paymentinfo";
+	} else {
+		echo "Error creating Table: " . mysqli_error($conn);
+	}
+
+	$tourbookings = "CREATE TABLE tourbooking(
+		tour_bookid int(100) AUTO_INCREMENT PRIMARY KEY,
+		tourid int(100) NOT NULL,
+		pax int(20) NOT NULL,
+		tour_title varchar(50) NOT NULL,
+		tour_date DATE NOT NULL,
+		userid int(200) NOT NULL	
+		)";
+
+	if (mysqli_query($conn, $tourbookings)) {
+		echo "Table tourbookings";
+	} else {
+		echo "Error creating Table: " . mysqli_error($conn);
+	}
+
+	$tourpackage = "CREATE TABLE tourpackage(
+		tourid int(100) AUTO_INCREMENT PRIMARY KEY,
+		title varchar(50) NULL,
+		price varchar(100) NOT NULL,
+		description varchar(255) NOT NULL,
+		duration  varchar(50) NOT NULL,
+		dates TEXT NOT NULL,
+		img varchar(100) NOT NULL,
+		itinerary TEXT,
+		type varchar(25) NOT NULL,
+		adminid int(200) NOT NULL
+		)";
+
+	if (mysqli_query($conn, $tourpackage)) {
+		echo "Table tourpackage";
 	} else {
 		echo "Error creating Table: " . mysqli_error($conn);
 	}
@@ -71,6 +115,7 @@
 		booking_type varchar(50) NOT NULL,
 		booking_id INT(100) NOT NULL,
 		status varchar(50) NOT NULL,
+		branch varchar(50) NOT NULL,
 		UNIQUE (booking_type, booking_id),
 		userid int(200) NOT NULL,
 		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -82,22 +127,6 @@
 		echo "Error creating Table: " . mysqli_error($conn);
 	}
 
-
-	$tourpackage = "CREATE TABLE tourpackage(
-		tourid int(100) AUTO_INCREMENT PRIMARY KEY,
-		title varchar(50) NULL,
-		price varchar(100) NOT NULL,
-		description varchar(255) NOT NULL,
-		duration  varchar(50) NOT NULL,
-		img varchar(100) NOT NULL,
-		adminid int(200) NOT NULL
-		)";
-
-	if (mysqli_query($conn, $tourpackage)) {
-		echo "Table tourpackage";
-	} else {
-		echo "Error creating Table: " . mysqli_error($conn);
-	}
 
 
 	$hotel = "CREATE TABLE hotel(
@@ -148,6 +177,7 @@
 		passport varchar(70)  NOT NULL,
 		validid varchar(70)  NOT NULL,
 		ticketid int(100)  NOT NULL,
+		booking_type varchar(50)  NOT NULL,
 		userid varchar(255) NOT NULL
 		)";
 

@@ -181,7 +181,9 @@ if (!$_SESSION['adminid']) {
             </div>
         </div>
     </div>
+    <script src="js/app.js"></script>
     <script>
+
     </script>
 </body>
 

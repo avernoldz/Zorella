@@ -28,7 +28,7 @@ if (!$_SESSION['adminid']) {
     include "header-admin.php";
     include "side-bar-admin.php";
 
-    $quotation = "SELECT *, quotation.email as email2, DATE(date) AS date FROM quotation INNER JOIN user ON quotation.userid = user.userid WHERE quotation.branch = 'Laguna' ORDER BY quotation.quotationid DESC";
+    $quotation = "SELECT *, quotation.email as email2, DATE(date) AS date FROM quotation INNER JOIN user ON quotation.userid = user.userid WHERE quotation.branch = 'Calumpang' ORDER BY quotation.quotationid DESC";
     $quotationResults = mysqli_query($conn, $quotation);
 
 
@@ -82,6 +82,7 @@ if (!$_SESSION['adminid']) {
             // }, 5000);
 
             var urlA = "ajax/quotation.php";
+            var urlCounts = "ajax/fetch-counts.php";
 
             $(document).ajaxSend(function() {
                 $(".overlay").fadeIn(300);
@@ -105,9 +106,27 @@ if (!$_SESSION['adminid']) {
                         alert("error");
                     }
                 }).done(function() {
-                    setTimeout(function() {
+                    // Third AJAX request for counts
+                    $.ajax({
+                        type: "POST",
+                        url: urlCounts,
+                        data: {
+                            branch: branch,
+                        },
+                        dataType: "json",
+                        success: function(response) {
+                            // Update the counts in the HTML
+                            $("#pending_count").text(response.pending_count);
+                            $("#ticket_count").text(response.ticket_count);
+                            $("#customize_count").text(response.customize_count);
+                            $("#educ_count").text(response.educ_count);
+                        },
+                        error: function() {
+                            alert("Error fetching counts");
+                        },
+                    }).done(function() {
                         $(".overlay").fadeOut(300);
-                    }, 500);
+                    });
                 });
                 console.log(branch);
             });

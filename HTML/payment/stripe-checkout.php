@@ -16,20 +16,20 @@ if (!$stripe_secret_key) {
 
 // Sanitize and validate input
 $userid = filter_input(INPUT_GET, 'userid', FILTER_SANITIZE_NUMBER_INT);
-$bookid = filter_input(INPUT_GET, 'bookid', FILTER_SANITIZE_NUMBER_INT);
+$payment_id = filter_input(INPUT_GET, 'payment_id', FILTER_SANITIZE_NUMBER_INT);
 
-if (!$userid || !$bookid) {
+if (!$userid || !$payment_id) {
     die('Invalid input.');
 }
 
 // Prepare and execute database query
-$query = "SELECT user.firstname, user.lastname, user.email, paymentinfo.price
+$query = "SELECT user.firstname, user.lastname, user.email, paymentinfo.downpayment
           FROM paymentinfo
           INNER JOIN user ON paymentinfo.userid = user.userid
-          WHERE user.userid = ? AND paymentinfo.bookid = ?";
+          WHERE user.userid = ? AND paymentinfo.paymentinfoid = ?";
 
 $stmt = $conn->prepare($query);
-$stmt->bind_param('ii', $userid, $bookid);
+$stmt->bind_param('ii', $userid, $payment_id);
 $stmt->execute();
 $res = $stmt->get_result();
 
@@ -40,7 +40,7 @@ $price = null;
 if ($row = $res->fetch_assoc()) {
     $name = $row['firstname'] . " " . $row['lastname'];
     $email = $row['email'];
-    $price = $row['price']; // Fetch price from database
+    $price = $row['downpayment']; // Fetch price from database
 } else {
     die('No matching records found.');
 }
@@ -50,7 +50,9 @@ if ($row = $res->fetch_assoc()) {
 // Define product details with PHP currency
 $products = [
     'product' => [
+        'title' => 'Downpayment',
         'name' => 'Booking Trip',
+        'description' => 'Secure your booking with a downpayment.',
         'price' => $price * 100, // Convert price to cents
         'currency' => 'php'
     ]
@@ -67,7 +69,8 @@ foreach ($products as $key => $product) {
             'currency' => $product['currency'],
             'unit_amount' => $product['price'],
             'product_data' => [
-                'name' => $product['name']
+                'name' => $product['name'],
+                'description' => $product['description'],
             ]
         ]
     ];

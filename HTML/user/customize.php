@@ -63,8 +63,8 @@ if (!$_SESSION['userid']) {
                         <div class="col-4">
                             <label for="branch">Branch</label><label for="" class="required">*</label>
                             <select name="branch" class="form-control" id="branch" required>
-                                <option selected>Laguna</option>
-                                <option>Metro Manila</option>
+                                <option selected>Calumpang</option>
+                                <option>Calamba</option>
                             </select>
                         </div>
 

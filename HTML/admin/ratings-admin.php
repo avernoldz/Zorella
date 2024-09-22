@@ -39,7 +39,7 @@ if (!$_SESSION['adminid']) {
             <div class="col-12 case">
                 <h1><i class="fa-solid fa-envelope fa-fw"></i>&nbsp;&nbsp;Ratings</h1>
                 <hr>
-                <div class="row frame-quote w-100">
+                <div class="row frame-quotee w-100">
                     <?php
                     if (mysqli_num_rows($ratingsResults) > 0) {
                         while ($ratingsRows = mysqli_fetch_array($ratingsResults)) {
@@ -103,6 +103,7 @@ if (!$_SESSION['adminid']) {
 
         })
     </script>
+    <script src="js/app.js"></script>
 </body>
 
 </html>

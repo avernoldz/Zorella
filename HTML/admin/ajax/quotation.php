@@ -18,21 +18,18 @@ if (isset($_POST["branch"])) {
                 class="populate-quote w-100">
                 <div class="row populate-quote">
                     <div class="col-3">
-                        <small><label for="" class="w-700">
-                                <?php echo "$quotationRows[firstname] $quotationRows[lastname]" ?><br>
-                            </label>
-                        </small>
+                        <label for="" class="w-700">
+                            <?php echo "$quotationRows[firstname] $quotationRows[lastname]" ?><br>
+                        </label>
                     </div>
-                    <div class="col-9 ellip">
-                        <small>
-                            <span><?php echo "$quotationRows[title] - From $quotationRows[origin] to $quotationRows[destination], $quotationRows[pax] pax for $quotationRows[days], Travel Date: $dateFormat" ?></span>
-                        </small>
+                    <div class="col-9">
+                        <p><?php echo "$quotationRows[title] - From $quotationRows[origin] to $quotationRows[destination], $quotationRows[pax] pax for $quotationRows[days], $dateFormat" ?></p>
                     </div>
                 </div>
             </a>
 <?php
         }
     } else {
-        echo "<div class='text-center col'> No data found</div>";
+        echo "<div class='text-center col'> No quotation available</div>";
     }
 }

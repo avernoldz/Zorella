@@ -1,6 +1,11 @@
 <?php
-$count = "SELECT
-    COUNT(b.booking_id) AS booking_count
+$sql = "
+SELECT
+    COUNT(CASE WHEN b.booking_type = 'Ticketed' AND b.status <> 'pending' THEN 1 END) AS ticket_count,
+    COUNT(CASE WHEN b.booking_type = 'Customize' AND b.status <> 'pending' THEN 1 END) AS customize_count,
+    COUNT(CASE WHEN b.booking_type = 'Educational' AND b.status <> 'pending' THEN 1 END) AS educ_count,
+    COUNT(CASE WHEN b.booking_type = 'Tour Package' AND b.status <> 'pending' THEN 1 END) AS tour_count,
+    COUNT(CASE WHEN b.status = 'pending' THEN 1 END) AS pending_count
 FROM
     booking b
 INNER JOIN
@@ -11,11 +16,21 @@ LEFT JOIN
     ticket tb ON b.booking_id = tb.ticketid
     AND (b.booking_type = 'Ticketed' OR b.booking_type = 'Customize')
 WHERE
-    b.status = 'pending'";
+    b.branch = 'Calumpang';
+";
 
-$rescount = mysqli_query($conn, $count);
+// Execute the query
+$res2 = mysqli_query($conn, $sql);
 
-$countrow = mysqli_fetch_array($rescount)
+// Fetch the results
+$row = mysqli_fetch_assoc($res2);
+
+// Access the counts
+$count_ticket = $row['ticket_count'];
+$count_customize = $row['customize_count'];
+$count_educ = $row['educ_count'];
+$count_pending = $row['pending_count'];
+$count_tour = $row['tour_count'];
 
 ?>
 
@@ -74,47 +89,47 @@ $countrow = mysqli_fetch_array($rescount)
                                             } ?>">
                                 <i class="fa-solid fa-hourglass-half fa-fw"></i>
                                 <span>Pending Bookings </span>
-                                <span class="number w-700"><?php echo $countrow['booking_count'] ?></span>
+                                <span class=" w-700" id="pending_count"><?php echo $count_pending ?></span>
                             </li>
                         </a>
 
-                        <a href="#">
+                        <a href="ticketed.php?adminid=<?php echo $adminid ?>">
                             <li class="navi <?php if ($active == "Ticket") {
                                                 echo "active";
                                             } ?>">
                                 <i class="fa-solid fa-ticket fa-fw"></i>
                                 <span>Ticketed</span>
-                                <span class="number w-700">10</span>
+                                <span class=" w-700" id="ticket_count"><?php echo $count_ticket ?></span>
                             </li>
                         </a>
 
-                        <a href="#">
+                        <a href="customize.php?adminid=<?php echo $adminid ?>">
                             <li class="navi <?php if ($active == "Customize") {
                                                 echo "active";
                                             } ?>">
                                 <i class="fa-solid fa-briefcase fa-fw"></i>
                                 <span>Customize</span>
-                                <span class="number w-700">3</span>
+                                <span class=" w-700" id="customize_count"><?php echo $count_customize ?></span>
                             </li>
                         </a>
 
-                        <a href="#">
-                            <li class="navi <?php if ($active == "Educational Tour") {
+                        <a href="educational.php?adminid=<?php echo $adminid ?>">
+                            <li class="navi <?php if ($active == "Educational") {
                                                 echo "active";
                                             } ?>">
                                 <i class="fa-solid fa-user-group fa-fw"></i>
                                 <span>Educational Tour</span>
-                                <span class="number w-700">0</span>
+                                <span class=" w-700" id="educ_count"><?php echo $count_educ ?></span>
                             </li>
                         </a>
 
-                        <a href="#">
+                        <a href="tour.php?adminid=<?php echo $adminid ?>">
                             <li class="navi <?php if ($active == "Tour Package") {
                                                 echo "active";
                                             } ?>">
                                 <i class="fa-solid fa-box-archive fa-fw"></i>
                                 <span>Tour Package</span>
-                                <span class="number w-700">0</span>
+                                <span class=" w-700"><?php echo $count_tour ?></span>
                             </li>
                         </a>
                     </ul>
@@ -122,30 +137,36 @@ $countrow = mysqli_fetch_array($rescount)
                     <a href="#" class="pay">
                         <li class="navi <?php if ($active == "Payments") {
                                             echo "active";
-                                        } ?>">
-                            <i class="fa-solid fa-clipboard fa-fw"></i>
+                                        }
+                                        if ($on == "active-pay") {
+                                            echo "active-drop";
+                                        }
+                                        ?>">
+                            <i class=" fa-solid fa-clipboard fa-fw"></i>
                             <span>Payments</span>
                         </li>
                     </a>
 
-                    <ul class="drop two">
-                        <a href="#">
+                    <ul class="drop two <?php if ($on == "active-pay") {
+                                            echo "on";
+                                        } ?>">
+                        <a href="full-payment.php?adminid=<?php echo $adminid ?>">
                             <li class="navi <?php if ($active == "Full") {
                                                 echo "active";
                                             } ?>">
                                 <i class="fa-solid fa-credit-card fa-fw"></i>
                                 <span>Full Payments </span>
-                                <span class="number w-700">1</span>
+                                <span class=" w-700">1</span>
                             </li>
                         </a>
 
-                        <a href="#">
+                        <a href="installments.php?adminid=<?php echo $adminid ?>">
                             <li class="navi <?php if ($active == "Installments") {
                                                 echo "active";
                                             } ?>">
                                 <i class="fa-solid fa-credit-card fa-fw"></i>
                                 <span>Installments</span>
-                                <span class="number w-700">10</span>
+                                <span class=" w-700">10</span>
                             </li>
                         </a>
                     </ul>
@@ -160,7 +181,7 @@ $countrow = mysqli_fetch_array($rescount)
                     </a>
 
                     <a href="tour-package.php?adminid=<?php echo $adminid ?>">
-                        <li class="navi <?php if ($active == "Tour Package") {
+                        <li class="navi <?php if ($active == "Tour") {
                                             echo "active";
                                         } ?>">
                             <i class="fa-solid fa-box-archive fa-fw"></i> <span>Tour Package</span>
@@ -174,8 +195,6 @@ $countrow = mysqli_fetch_array($rescount)
                             <i class="fa-solid fa-star fa-fw"></i> <span>Ratings</span>
                         </li>
                     </a>
-
-
                 </ul>
             </div>
         </div>
