@@ -282,7 +282,7 @@ function random_strings($length_of_string)
                                                                     if ($row['stat'] == 'Pending') {
                                                                         echo "<span class='text-warning'>Pending</span>";
                                                                     } else if ($row['stat'] == 'Payment') {
-                                                                        echo "<span class='text-info'>Payment</span>";
+                                                                        echo "<span class='text-info'>Confirmed Booking, waiting for payment</span>";
                                                                     } else {
                                                                         echo "<span class='text-success'>Paid</span>";
                                                                     }
@@ -291,9 +291,14 @@ function random_strings($length_of_string)
                                                             </tr>
                                                             <?php if ($row['stat'] == 'Payment'): ?>
                                                                 <tr>
-
+                                                                    <td style="vertical-align:middle;">Confirmation</td>
+                                                                    <td class="w-700"><?php echo "<a style='font-size: 12px;' class='btn btn-sm btn-success' href='../admin/confirmation-bookings/$row[confirmation_pdf]' target='_blank'>Download Confirmation Booking</a>" ?></td>
+                                                                </tr>
+                                                            <?php endif; ?>
+                                                            <?php if ($row['stat'] == 'Payment'): ?>
+                                                                <tr>
                                                                     <td>Payment</td>
-                                                                    <td class="w-700"><?php echo "<a href='payment.php?bookid=$row[bookid]'>Pay Here</a>" ?></td>
+                                                                    <td class="w-700"><?php echo "<a style='font-size: 12px;' class='btn btn-sm btn-danger' href='../payment/stripe-checkout.php?payment_id=$row[paymentinfoid]&userid=$row[userid]'>Pay Here</a>" ?></td>
                                                                 </tr>
                                                             <?php endif; ?>
                                                         </table>
@@ -367,7 +372,7 @@ function random_strings($length_of_string)
                                                                     if ($row['stat'] == 'Pending') {
                                                                         echo "<span class='text-warning'>Pending</span>";
                                                                     } else if ($row['stat'] == 'Payment') {
-                                                                        echo "<span class='text-info'>Payment</span>";
+                                                                        echo "<span class='text-info'>Confirmed Booking, waiting for payment</span>";
                                                                     } else {
                                                                         echo "<span class='text-success'>Paid</span>";
                                                                     }
@@ -376,8 +381,14 @@ function random_strings($length_of_string)
                                                             </tr>
                                                             <?php if ($row['stat'] == 'Payment'): ?>
                                                                 <tr>
+                                                                    <td style="vertical-align:middle;">Confirmation</td>
+                                                                    <td class="w-700"><?php echo "<a style='font-size: 12px;' class='btn btn-sm btn-success' href='../admin/confirmation-bookings/$row[confirmation_pdf]' target='_blank'>Download Confirmation Booking</a>" ?></td>
+                                                                </tr>
+                                                            <?php endif; ?>
+                                                            <?php if ($row['stat'] == 'Payment'): ?>
+                                                                <tr>
                                                                     <td>Payment</td>
-                                                                    <td class="w-700"><?php echo "<a href='../payment/stripe-checkout.php?bookid=$row[bookid]&userid=$row[userid]'>Pay Here</a>" ?></td>
+                                                                    <td class="w-700"><?php echo "<a style='font-size: 12px;' class='btn btn-sm btn-danger' href='../payment/stripe-checkout.php?payment_id=$row[paymentinfoid]&userid=$row[userid]'>Pay Here</a>" ?></td>
                                                                 </tr>
                                                             <?php endif; ?>
                                                         </table>
