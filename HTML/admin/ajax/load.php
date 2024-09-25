@@ -283,9 +283,53 @@ if (isset($_POST["fullpayment"])) {
                 <td>&#x20B1; <?php echo "$row[remaining_balance]" ?></td>
                 <td class="text-center"><i class="fa-solid fa-pen fa-fw text-primary"></i></td>
             </tr>
-<?php
+        <?php
         }
     } else {
         echo "<tr class='text-center col'> <td  colspan='7'>No payment available</td></tr>";
+    }
+}
+
+
+if (isset($_POST["archive"])) {
+    $id = $_POST["id"];
+    $adminid = $_POST["adminid"];
+
+    $query = "UPDATE tourpackage SET isArchive = TRUE WHERE tourid = '$id'";
+    if (!mysqli_query($conn, $query)) {
+        echo mysqli_error($conn);
+    }
+
+    $query = "SELECT * FROM tourpackage WHERE isArchive = FALSE";
+    $res = mysqli_query($conn, $query);
+
+    if (mysqli_num_rows($res) > 0) {
+        while ($row = mysqli_fetch_array($res)) {
+            $bsdate = date_create($row['bsdate']);
+            $bedate = date_create($row['bedate']);
+
+            // Format each date
+            $formattedBsdate = date_format($bsdate, 'M j, Y');
+            $formattedBedate = date_format($bedate, 'M j, Y');
+        ?>
+            <tr>
+                <td><?php echo "$row[tourid]" ?></td>
+                <td>
+                    <img src="uploads/<?php echo "$row[img]" ?>" alt="tour-package" width="50px" height="50px" style="object-fit: cover;">
+                </td>
+                <td><?php echo "$row[title]" ?></td>
+                <td>&#x20B1; <?php echo number_format($row['price'], 0) ?></td>
+                <td><?php echo "$formattedBsdate - $formattedBedate" ?></td>
+                <td>
+                    <p><?php echo "$row[description]" ?></p>
+                </td>
+
+                <td class="text-center">
+                    <!-- <i class="fa-solid fa-pen fa-fw text-primary"></i> -->
+                    <i class="fa-solid fa-box-archive fa-fw text-primary archive" style="cursor: pointer;" data-id="<?php echo $row['tourid'] ?>"></i>
+                </td>
+            </tr>
+<?php
+        }
     }
 }

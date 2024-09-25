@@ -65,7 +65,8 @@
 		img varchar(100) NOT NULL,
 		itinerary TEXT,
 		type varchar(25) NOT NULL,
-		adminid int(200) NOT NULL
+		adminid int(200) NOT NULL,
+		isArchive BOOLEAN DEFAULT FALSE
 		)";
 
 	if (mysqli_query($conn, $tourpackage)) {

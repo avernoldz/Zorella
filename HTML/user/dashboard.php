@@ -140,13 +140,13 @@ if (!$_SESSION['userid']) {
     include "side-bar.php";
     include "header.php";
 
-    $query = "SELECT * FROM tourpackage WHERE type = 'Domestic' LIMIT 6";
+    $query = "SELECT * FROM tourpackage WHERE type = 'Domestic' AND isArchive = FALSE LIMIT 6";
     $res = mysqli_query($conn, $query);
 
-    $query2 = "SELECT tp.*, COUNT(tb.tourid) AS entry_count FROM tourpackage tp LEFT JOIN tourbooking tb ON tp.tourid = tb.tourid GROUP BY tp.tourid ORDER BY entry_count DESC LIMIT 10";
+    $query2 = "SELECT tp.*, COUNT(tb.tourid) AS entry_count FROM tourpackage tp LEFT JOIN tourbooking tb ON tp.tourid = tb.tourid WHERE isArchive = FALSE GROUP BY tp.tourid ORDER BY entry_count DESC LIMIT 10";
     $res2 = mysqli_query($conn, $query2);
 
-    $query3 = "SELECT * FROM tourpackage WHERE type = 'International' LIMIT 6";
+    $query3 = "SELECT * FROM tourpackage WHERE type = 'International' AND isArchive = FALSE LIMIT 6 ";
     $res3 = mysqli_query($conn, $query3);
 
     function getDateDuration($bsdate, $bedate)
