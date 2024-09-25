@@ -57,7 +57,7 @@ function processDueDates($conn)
     $currentDate = new DateTime();
 
     foreach ($rows as $row) {
-        $dueDatesString = $row['due_dates'];
+        $dueDatesString = $row['due_date'];
 
         // Check if due_dates is "NOT APPLICABLE"
         if (trim($dueDatesString) === 'NOT APPLICABLE') {

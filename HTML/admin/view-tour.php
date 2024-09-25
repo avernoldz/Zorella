@@ -49,6 +49,7 @@ if (!$_SESSION['adminid']) {
     $quotation = "SELECT  
                     user.firstname AS user_firstname, 
                     user.lastname AS user_lastname, 
+                    user.userid AS id,
                     personalinfo.*, 
                     tourbooking.*,
                     payment.*,
@@ -145,10 +146,6 @@ if (!$_SESSION['adminid']) {
                         <div class="info-item">
                             <label>Pax</label>
                             <p><?php echo $firstRow['pax'] ?></p>
-                        </div>
-                        <div class="info-item">
-                            <label>Days</label>
-                            <p><?php echo $firstRow['duration'] ?></p>
                         </div>
                         <div class="info-item">
                             <label>Status</label>
@@ -300,7 +297,6 @@ if (!$_SESSION['adminid']) {
                                         <div class="row w-100">
                                             <div class="col flex " style="align-items: normal;">
                                                 <div class=" div">
-                                                    <p>Days: <label><?php echo $firstRow['duration'] ?></label></p>
                                                     <p>Date: <label id="travel_date"><?php echo $firstRow['tour_date'] ?></label></p>
                                                     <p>PAX: <label id="total_pax"><?php echo $firstRow['pax'] ?></label></p>
                                                 </div>
@@ -387,7 +383,7 @@ if (!$_SESSION['adminid']) {
                             <input type="hidden" name="total_price" id="total_amount" value="">
                             <input type="hidden" name="bookid" value="<?php echo $bookid ?>">
                             <input type="hidden" name="adminid" value="<?php echo $adminid ?>">
-                            <input type="hidden" name="userid" value="<?php echo $frow['userid'] ?>">
+                            <input type="hidden" name="userid" value="<?php echo $frow['id'] ?>">
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary"

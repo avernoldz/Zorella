@@ -29,7 +29,7 @@ if (!$_SESSION['userid']) {
         }
 
         .main .row .itinerary h1 {
-            font-size: 32px;
+            font-size: 24px;
         }
 
         .main .row img {
@@ -67,7 +67,8 @@ if (!$_SESSION['userid']) {
     $query = "SELECT * FROM tourpackage WHERE tourid = '$packageid'";
     $res = mysqli_query($conn, $query);
     $row = mysqli_fetch_array($res);
-    $dates = json_decode($row['dates']);
+    $dates = json_decode($row['tsdates']);
+    $dates2 = json_decode($row['tedates']);
 
     ?>
     <div class="main">
@@ -85,9 +86,9 @@ if (!$_SESSION['userid']) {
                         <div class="col pl-4 pr-4  itinerary">
                             <h1 class="w-700 mb-2"><?php echo $row['title'] ?></h1>
                             <p class="mb-2"><?php echo $row['description'] ?></p>
-                            <h6 class="price w-700" style="color:var(--maindark);font-size: 24px;">&#x20B1; <?php echo number_format($row['price'], 0) ?> / pax</h6>
+                            <h6 class="price w-700" style="color:var(--maindark);font-size: 20px;">&#x20B1; <?php echo number_format($row['price'], 0) ?> / pax</h6>
                             <hr>
-                            <h2 class="w-700 mb-2">ITINERARY</h2>
+                            <h2 class="w-700 mb-2" style="font-size:20px;">ITINERARY</h2>
                             <?php echo $row['itinerary'] ?>
 
                         </div>
@@ -95,10 +96,6 @@ if (!$_SESSION['userid']) {
                             <button type="button" data-target="#book" data-toggle="modal" class="btn btn-primary book-btn">Book Now <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
                             </button>
                         </div>
-                        <!-- <div class="col-4">
-                                <img src="../admin/uploads/<?php echo $row['img'] ?>" class="mb-3" alt="tour-image" width="100%">
-
-                            </div> -->
                     </div>
                 </div>
 
@@ -132,11 +129,13 @@ if (!$_SESSION['userid']) {
                                             <label for="pax">Date</label><label for="" class="required">*</label>
                                             <select name="date" class="form-control">
                                                 <option disabled selected>Select Date</option>
-                                                <?php foreach ($dates as $date):
-                                                    $formattedDate = date('F d, Y', strtotime($date));
+                                                <?php foreach ($dates as $index => $date):
+                                                    // Format both dates
+                                                    $formattedDate1 = date('M d, Y', strtotime($date));
+                                                    $formattedDate2 = date('M d, Y', strtotime($dates2[$index])); // Use the same index for the second array
                                                 ?>
                                                     <option value="<?php echo htmlspecialchars($date); ?>">
-                                                        <?php echo htmlspecialchars($formattedDate); ?>
+                                                        <?php echo htmlspecialchars($formattedDate1) . ' - ' . htmlspecialchars($formattedDate2); ?>
                                                     </option>
                                                 <?php endforeach; ?>
                                             </select>

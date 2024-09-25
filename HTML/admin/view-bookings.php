@@ -35,6 +35,7 @@ if (!$_SESSION['adminid']) {
     $quotation = "SELECT  
                     user.firstname AS user_firstname, 
                     user.lastname AS user_lastname, 
+                    user.userid AS id,
                     personalinfo.*, 
                     ticket.*,
                     payment.*,
@@ -429,7 +430,7 @@ if (!$_SESSION['adminid']) {
                             <input type="hidden" name="total_price" id="total_amount" value="">
                             <input type="hidden" name="bookid" value="<?php echo $bookid ?>">
                             <input type="hidden" name="adminid" value="<?php echo $adminid ?>">
-                            <input type="hidden" name="userid" value="<?php echo $frow['userid'] ?>">
+                            <input type="hidden" name="userid" value="<?php echo $frow['id'] ?>">
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary"

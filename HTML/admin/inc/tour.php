@@ -65,8 +65,10 @@ if (isset($_POST['tour'])) {
     $title = mysqli_real_escape_string($conn, $_POST['title']);
     $price = mysqli_real_escape_string($conn, $_POST['price']);
     $type = mysqli_real_escape_string($conn, $_POST['type']);
-    $duration = mysqli_real_escape_string($conn, $_POST['duration']);
-    $datesArray = $_POST['dates'];
+    $bsdate = mysqli_real_escape_string($conn, $_POST['bsdate']);
+    $bedate = mysqli_real_escape_string($conn, $_POST['bedate']);
+    $datesArrayStart = $_POST['tsdates'];
+    $datesArrayEnd = $_POST['tedates'];
     $description = mysqli_real_escape_string($conn, $_POST['description']);
     $adminid = mysqli_real_escape_string($conn, $_POST['adminid']);
     $itinerary = $_POST['itinerary'];
@@ -74,10 +76,11 @@ if (isset($_POST['tour'])) {
 
     // Access the files for each index
     $imgFilename = uploadFile($img, $target_dir, $adminid);
-    $datesJson = json_encode($datesArray);
+    $datesJson = json_encode($datesArrayStart);
+    $datesJson2 = json_encode($datesArrayStart);
 
-    $insert = "INSERT INTO `tourpackage`( `title`, `price`, `duration`, `description`, `img`, `dates`, `itinerary`, `type`, `adminid`)
-        VALUES ('$title', '$price', '$duration','$description','$imgFilename', '$datesJson', '$itinerary', '$type', '$adminid')";
+    $insert = "INSERT INTO `tourpackage`( `title`, `price`, `bsdate`,`bedate`, `description`, `img`, `tsdates`, `tedates`, `itinerary`, `type`, `adminid`)
+        VALUES ('$title', '$price', '$bsdate', '$bedate','$description','$imgFilename', '$datesJson', '$datesJson2', '$itinerary', '$type', '$adminid')";
 
     if (mysqli_query($conn, $insert)) {
         header("Location: ../tour-package.php?adminid=$adminid");

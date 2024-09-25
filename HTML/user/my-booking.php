@@ -73,10 +73,10 @@ function random_strings($length_of_string)
             font-size: 14px;
         }
 
-        .row.populate-quote.w-100.Payment {
+        /* .row.populate-quote.w-100.Payment {
             background: var(--main-500);
             color: white;
-        }
+        } */
     </style>
 </head>
 
@@ -151,8 +151,14 @@ function random_strings($length_of_string)
 
                     <div class="row body">
                         <div class="row w-100">
+
                             <?php
                             if (!empty($allResults)) {
+
+                                usort($allResults, function ($a, $b) {
+                                    return strtotime($b['date_created']) - strtotime($a['date_created']);
+                                });
+
                                 foreach ($allResults as $row) {
                                     $dateFormats = [
                                         'departure' => 'M d, Y',
@@ -174,7 +180,6 @@ function random_strings($length_of_string)
                                             $row[$key] = '';
                                         }
                                     }
-
                                     $rand = random_strings(5);
 
                             ?>
@@ -298,7 +303,7 @@ function random_strings($length_of_string)
                                                             <?php if ($row['stat'] == 'Payment'): ?>
                                                                 <tr>
                                                                     <td>Payment</td>
-                                                                    <td class="w-700"><?php echo "<a style='font-size: 12px;' class='btn btn-sm btn-danger' href='../payment/stripe-checkout.php?payment_id=$row[paymentinfoid]&userid=$row[userid]'>Pay Here</a>" ?></td>
+                                                                    <td class="w-700"><?php echo "<a style='font-size: 12px;' class='btn btn-sm btn-danger' href='../payment/stripe-checkout.php?payment_id=$row[paymentinfoid]&userid=$row[userid]&bookid=$row[bookid]&booking_type=$row[booking_type]&booking_id=$row[booking_id]'>Pay Here</a>" ?></td>
                                                                 </tr>
                                                             <?php endif; ?>
                                                         </table>
@@ -388,7 +393,7 @@ function random_strings($length_of_string)
                                                             <?php if ($row['stat'] == 'Payment'): ?>
                                                                 <tr>
                                                                     <td>Payment</td>
-                                                                    <td class="w-700"><?php echo "<a style='font-size: 12px;' class='btn btn-sm btn-danger' href='../payment/stripe-checkout.php?payment_id=$row[paymentinfoid]&userid=$row[userid]'>Pay Here</a>" ?></td>
+                                                                    <td class="w-700"><?php echo "<a style='font-size: 12px;' class='btn btn-sm btn-danger' href='../payment/stripe-checkout.php?payment_id=$row[paymentinfoid]&userid=$row[userid]&bookid=$row[bookid]&booking_type=$row[booking_type]&booking_id=$row[booking_id]'>Pay Here</a>" ?></td>
                                                                 </tr>
                                                             <?php endif; ?>
                                                         </table>
@@ -433,10 +438,6 @@ function random_strings($length_of_string)
                                                                 <td class="w-700"><?php echo htmlspecialchars($row['tour_title']) ?></td>
                                                             </tr>
                                                             <tr>
-                                                                <td>Days</td>
-                                                                <td class="w-700"><?php echo htmlspecialchars($row['duration']) ?></td>
-                                                            </tr>
-                                                            <tr>
                                                                 <td>Pax</td>
                                                                 <td class="w-700"><?php echo htmlspecialchars($row['pax']) ?></td>
                                                             </tr>
@@ -467,7 +468,7 @@ function random_strings($length_of_string)
                                                             <?php if ($row['stat'] == 'Payment'): ?>
                                                                 <tr>
                                                                     <td>Payment</td>
-                                                                    <td class="w-700"><?php echo "<a style='font-size: 12px;' class='btn btn-sm btn-danger' href='../payment/stripe-checkout.php?payment_id=$row[paymentinfoid]&userid=$row[userid]'>Pay Here</a>" ?></td>
+                                                                    <td class="w-700"><?php echo "<a style='font-size: 12px;' class='btn btn-sm btn-danger' href='../payment/stripe-checkout.php?payment_id=$row[paymentinfoid]&userid=$row[userid]&bookid=$row[bookid]&booking_type=$row[booking_type]&booking_id=$row[booking_id]'>Pay Here</a>" ?></td>
                                                                 </tr>
                                                             <?php endif; ?>
                                                         </table>

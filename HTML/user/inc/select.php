@@ -70,9 +70,9 @@ $ticketQuery = "
     INNER JOIN
         user u ON b.userid = u.userid
     INNER JOIN
-        ticket tc ON b.booking_type = 'Customize' AND b.booking_id = tc.ticketid
+        ticket tc ON (b.booking_type = 'Customize' OR b.booking_type = 'Ticketed') AND b.booking_id = tc.ticketid
     INNER JOIN
-        payment p ON p.booking_id = b.booking_id AND p.booking_type = 'Customize'
+        payment p ON p.booking_id = b.booking_id AND (p.booking_type = 'Customize' OR p.booking_type = 'Ticketed')
     LEFT JOIN
         paymentinfo pt ON pt.payment_id = p.paymentid
     WHERE
@@ -104,8 +104,7 @@ $tourPackageQuery = "
         pt.payment_id,
         p.paymentid,
         pt.paymentinfoid,
-        tp.title,
-        tp.duration
+        tp.title
     FROM
         booking b
     INNER JOIN
