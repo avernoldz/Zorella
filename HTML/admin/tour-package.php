@@ -95,7 +95,7 @@ if (!$_SESSION['adminid']) {
                                 <th>Image</th>
                                 <th>Title</th>
                                 <th>Price</th>
-                                <th>Duration</th>
+                                <th>Booking Period</th>
                                 <th>Description</th>
                                 <th>Action</th>
                             </tr>
@@ -104,6 +104,12 @@ if (!$_SESSION['adminid']) {
                             <?php
                             if (mysqli_num_rows($res) > 0) {
                                 while ($row = mysqli_fetch_array($res)) {
+                                    $bsdate = date_create($row['bsdate']);
+                                    $bedate = date_create($row['bedate']);
+
+                                    // Format each date
+                                    $formattedBsdate = date_format($bsdate, 'M j, Y');
+                                    $formattedBedate = date_format($bedate, 'M j, Y');
                             ?>
                                     <tr>
                                         <td><?php echo "$row[tourid]" ?></td>
@@ -111,13 +117,16 @@ if (!$_SESSION['adminid']) {
                                             <img src="uploads/<?php echo "$row[img]" ?>" alt="tour-package" width="50px" height="50px" style="object-fit: cover;">
                                         </td>
                                         <td><?php echo "$row[title]" ?></td>
-                                        <td>&#x20B1; <?php echo "$row[price]" ?></td>
-                                        <td><?php echo "$row[duration]" ?></td>
+                                        <td>&#x20B1; <?php echo number_format($row['price'], 0) ?></td>
+                                        <td><?php echo "$formattedBsdate - $formattedBedate" ?></td>
                                         <td>
                                             <p><?php echo "$row[description]" ?></p>
                                         </td>
 
-                                        <td class="text-center"><i class="fa-solid fa-pen fa-fw text-primary"></i></td>
+                                        <td class="text-center">
+                                            <i class="fa-solid fa-pen fa-fw text-primary"></i>
+                                            <i class="fa-solid fa-box-archive fa-fw text-primary"></i>
+                                        </td>
                                     </tr>
                             <?php
                                 }
@@ -161,16 +170,31 @@ if (!$_SESSION['adminid']) {
                                 </div>
 
                                 <div class="col-4 mt-3">
-                                    <label for="">Duration</label><label for="" class="required">*</label>
-                                    <input type="text" id="duration"
-                                        placeholder="11 Days, 10 Night" name="duration"
+                                    <label for="">Booking Start Date</label><label for="" class="required">*</label>
+                                    <input type="date" id="bsdate" name="bsdate"
                                         class="form-control" required>
                                 </div>
+
+                                <div class="col-4 mt-3">
+                                    <label for="">Booking End Date</label><label for="" class="required">*</label>
+                                    <input type="date" id="bedate" name="bedate"
+                                        class="form-control" required>
+                                </div>
+
                                 <div class="row w-100 date-inputs">
                                     <div class="col-4 mt-3">
-                                        <label for="">Date</label><label for="" class="required">*</label>
+                                        <label for="">Trave Date Start</label><label for="" class="required">*</label>
+                                        <input type="date" id="tsdates" name="tsdates[]" class="form-control" required>
+                                    </div>
+
+                                    <div class="col-4 mt-3">
+                                        <label for="">Trave Date End</label><label for="" class="required">*</label>
+                                        <input type="date" id="tedates" name="tedates[]" class="form-control" required>
+                                    </div>
+
+                                    <div class="col-4 mt-3">
                                         <button type="button" class='ml-3 add-date' style="border:none;padding: 4px;background:transparent;"><i class='fa-solid fa-plus fa-fw'></i></button>
-                                        <input type="date" id="date" name="dates[]" class="form-control" required>
+                                        <button type="button" class='ml-3 remove-date' style="border:none;padding: 4px;background:transparent;"><i class='fa-solid fa-minus fa-fw'></i></button>
                                     </div>
                                 </div>
 
@@ -248,11 +272,24 @@ if (!$_SESSION['adminid']) {
         $(document).ready(function() {
 
             $('.add-date').click(function() {
-                var newDate = ` <div class="col-4 mt-3">
-                                        <label for="" class="mb-2">Date</label><label for="" class="required">*</label>
-                                        <input type="date" id="date" name="dates[]" class="form-control" required>
-                                    </div>`;
-                $('.date-inputs').append(newDate);
+                var newDate = `<div class="row w-100 date-inputs">
+                                    <div class="col-4 mt-3">
+                                        <label for="">Trave Date Start</label><label for="" class="required">*</label>
+                                        <input type="date" id="tsdates" name="tsdates[]" class="form-control" required>
+                                    </div>
+
+                                    <div class="col-4 mt-3">
+                                        <label for="">Trave Date End</label><label for="" class="required">*</label>
+                                        <input type="date" id="tedates" name="tedates[]" class="form-control" required>
+                                    </div>
+                                </div>`;
+                $('.date-inputs').last().after(newDate);
+            });
+
+
+            $(document).on('click', '.remove-date', function() {
+
+                $(this).closest('.date-inputs').next('.date-inputs').remove();
             });
 
             $('#myTable').DataTable({

@@ -149,6 +149,17 @@ if (!$_SESSION['userid']) {
     $query3 = "SELECT * FROM tourpackage WHERE type = 'International' LIMIT 6";
     $res3 = mysqli_query($conn, $query3);
 
+    function getDateDuration($bsdate, $bedate)
+    {
+        $bsdate = date_create($bsdate);
+        $bedate = date_create($bedate);
+
+        $formattedBsdate = date_format($bsdate, 'M j, Y');
+        $formattedBedate = date_format($bedate, 'M j, Y');
+
+        return $formattedBsdate . ' - ' . $formattedBedate;
+    }
+
     ?>
     <div class="main">
         <div class="row">
@@ -181,7 +192,7 @@ if (!$_SESSION['userid']) {
                                     </div>
 
                                     <div class="card-body">
-                                        <label class="days mb-0 w-500 mt-1" style="color:#6b6b6b"><?php echo "$row[duration]" ?></label>
+                                        <label class="days mb-0 w-500 mt-1" style="color:#6b6b6b"><?php echo getDateDuration($row['bsdate'], $row['bedate']) ?></label>
                                         <h5 class="card-title w-700 mb-1 text-uppercase" style="letter-spacing: -1px; font-size: 18px;"><?php echo "$row[title]" ?></h5>
                                         <p class="mt-1 mb-2"><?php echo "$row[description]" ?></p>
                                         <div class="flex">
@@ -215,7 +226,7 @@ if (!$_SESSION['userid']) {
                                     </div>
 
                                     <div class="card-body">
-                                        <label class="days mb-0 w-500 mt-1" style="color: #6b6b6b;"><?php echo "$row[duration]" ?></label>
+                                        <label class="days mb-0 w-500 mt-1" style="color: #6b6b6b;"><?php echo getDateDuration($row['bsdate'], $row['bedate']) ?></label>
                                         <h5 class="card-title w-700 mb-1 text-uppercase" style="letter-spacing: -1px; font-size: 18px;"><?php echo "$row[title]" ?></h5>
                                         <p class="mt-1 mb-2"><?php echo "$row[description]" ?></p>
                                         <div class="flex">
@@ -249,7 +260,7 @@ if (!$_SESSION['userid']) {
                                     </div>
 
                                     <div class="card-body">
-                                        <label class="days mb-0 w-500 mt-1" style="color:#6b6b6b"><?php echo "$row[duration]" ?></label>
+                                        <label class="days mb-0 w-500 mt-1" style="color:#6b6b6b"><?php echo getDateDuration($row['bsdate'], $row['bedate']) ?></label>
                                         <h5 class="card-title w-700 mb-1 text-uppercase" style="letter-spacing: -1px; font-size: 18px;"><?php echo "$row[title]" ?></h5>
                                         <p class="mt-1 mb-2"><?php echo "$row[description]" ?></p>
                                         <div class="flex">

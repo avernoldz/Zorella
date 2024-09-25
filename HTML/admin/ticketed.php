@@ -133,7 +133,7 @@ if (!$_SESSION['adminid']) {
         $(document).ready(function() {
 
             var urlA = "ajax/load.php";
-            var urlA = "ajax/fetch-counts.php";
+            var urlCounts = "ajax/fetch-counts.php";
 
             $(document).ajaxSend(function() {
                 $(".overlay").fadeIn(300);

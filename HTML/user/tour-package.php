@@ -145,6 +145,12 @@ if (!$_SESSION['userid']) {
                             <?php
                             if (mysqli_num_rows($res) > 0) {
                                 while ($row = mysqli_fetch_array($res)) {
+
+                                    $bsdate = date_create($row['bsdate']);
+                                    $bedate = date_create($row['bedate']);
+
+                                    $formattedBsdate = date_format($bsdate, 'M j, Y');
+                                    $formattedBedate = date_format($bedate, 'M j, Y');
                             ?>
                                     <div class="card mr-3 mb-3" style="width: 18rem;">
                                         <div class="image-container">
@@ -154,7 +160,7 @@ if (!$_SESSION['userid']) {
                                         <div class="card-body">
                                             <h5 class="card-title w-700"><?php echo "$row[title]" ?></h5>
 
-                                            <h6 class="days w-700"><?php echo "$row[duration]" ?></h6>
+                                            <h6 class="days w-700"><?php echo "$formattedBsdate - $formattedBedate" ?></h6>
                                             <p class="card-text"><?php echo "$row[description]" ?></p>
                                             <hr>
                                             <div class="flex">

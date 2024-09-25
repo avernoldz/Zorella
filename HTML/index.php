@@ -357,6 +357,11 @@ if (isset($_GET['Logout'])) {
                                 style="font-family:Arial, FontAwesome" required>
                         </div>
                         <div class="form-group">
+                            <input type="text" class="form-control form" id="number" name="number"
+                                aria-describedby="emailHelp" placeholder="&#xf0e0; Phone Number"
+                                style="font-family:Arial, FontAwesome" required>
+                        </div>
+                        <div class="form-group">
                             <input type="password" class="form-control form" id="password" name="password"
                                 aria-describedby="emailHelp" placeholder="&#xf023; Password"
                                 style="font-family:Arial, FontAwesome" required>
@@ -506,11 +511,12 @@ if (isset($_GET['Logout'])) {
         $firstname = $_POST['firstname'];
         $lastname = $_POST['lastname'];
         $email = $_POST['email'];
+        $number = $_POST['number'];
         $password = $_POST['password'];
 
         $hash_pass = password_hash("$password", PASSWORD_BCRYPT, $options);
-        $query = "INSERT INTO user(firstname, lastname, email, password)
-                        VALUES('$firstname', '$lastname', '$email', '$hash_pass')";
+        $query = "INSERT INTO user(firstname, lastname, email, password, phonenumber)
+                        VALUES('$firstname', '$lastname', '$email', '$hash_pass', '$number')";
         // $results = mysqli_query($conn, $query);
 
 
