@@ -124,7 +124,7 @@ if (!$_SESSION['userid']) {
     include "side-bar.php";
     include "header.php";
 
-    $query = "SELECT * FROM tourpackage";
+    $query = "SELECT * FROM tourpackage WHERE isArchive = FALSE";
     $res = mysqli_query($conn, $query);
 
     ?>

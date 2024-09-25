@@ -78,10 +78,17 @@ if (!$_SESSION['adminid']) {
     include "header-admin.php";
     include "side-bar-admin.php";
 
-    $query = "SELECT * FROM tourpackage";
+    $query = "SELECT * FROM tourpackage WHERE isArchive = FALSE";
     $res = mysqli_query($conn, $query);
 
     ?>
+
+    <div class="overlay">
+        <div class="spinner-grow text-light" role="status">
+            <span class="visually-hidden"></span>
+        </div>
+    </div>
+
     <div class="main">
         <div class="row bkq">
             <div class="col-12 case">
@@ -100,7 +107,7 @@ if (!$_SESSION['adminid']) {
                                 <th>Action</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="data">
                             <?php
                             if (mysqli_num_rows($res) > 0) {
                                 while ($row = mysqli_fetch_array($res)) {
@@ -124,8 +131,8 @@ if (!$_SESSION['adminid']) {
                                         </td>
 
                                         <td class="text-center">
-                                            <i class="fa-solid fa-pen fa-fw text-primary"></i>
-                                            <i class="fa-solid fa-box-archive fa-fw text-primary"></i>
+                                            <!-- <i class="fa-solid fa-pen fa-fw text-primary"></i> -->
+                                            <i class="fa-solid fa-box-archive fa-fw text-primary archive" style="cursor: pointer;" data-id="<?php echo $row['tourid'] ?>"></i>
                                         </td>
                                     </tr>
                             <?php
@@ -270,6 +277,57 @@ if (!$_SESSION['adminid']) {
     </script>
     <script>
         $(document).ready(function() {
+
+            $('.archive').click(function() {
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "You won't be able to revert this!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, archive it!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        const id = $(this).data('id');
+                        console.log(id);
+
+                        var urlA = "ajax/load.php";
+
+                        $(document).ajaxSend(function() {
+                            $(".overlay").fadeIn(300);
+                        });
+
+                        adminid = <?php echo $adminid ?>;
+
+                        $.ajax({
+                            type: 'POST',
+                            url: urlA,
+                            data: {
+                                id: id,
+                                adminid: adminid,
+                                archive: 'archive'
+                            },
+                            success: function(data) {
+                                $('#data').html(data);
+                            },
+                            error: function(e) {
+                                alert("error");
+                            }
+                        }).done(function() {
+                            setTimeout(function() {
+                                $(".overlay").fadeOut(300);
+                            }, 500);
+                        });
+
+                        Swal.fire({
+                            title: "Archived",
+                            text: "Package has been archived.",
+                            icon: "success"
+                        });
+                    }
+                });
+            })
 
             $('.add-date').click(function() {
                 var newDate = `<div class="row w-100 date-inputs">
