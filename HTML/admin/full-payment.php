@@ -5,6 +5,20 @@ session_regenerate_id();
 if (!$_SESSION['adminid']) {
     header("Location:index.php?Login-first");
 }
+
+function random_strings($length_of_string)
+{
+
+    // String of all alphanumeric character
+    $str_result = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+    // Shuffle the $str_result and returns substring
+    // of specified length
+    return substr(
+        str_shuffle($str_result),
+        0,
+        $length_of_string
+    );
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -109,6 +123,7 @@ if (!$_SESSION['adminid']) {
                             <?php
                             if (mysqli_num_rows($res) > 0) {
                                 while ($row = mysqli_fetch_array($res)) {
+                                    $string = random_strings(4);
                             ?>
                                     <tr>
                                         <td><?php echo "$row[paymentinfoid]" ?></td>
@@ -124,7 +139,46 @@ if (!$_SESSION['adminid']) {
                                             }
 
                                             ?></td>
-                                        <td class="text-center"><i class="fa-solid fa-pen fa-fw text-primary"></i></td>
+                                        <td class="text-center">
+                                            <i class="fa-solid fa-pen fa-fw text-secondary" style="cursor: pointer;" data-target="#<?php echo $string; ?>" data-toggle="modal"></i>
+
+                                            <div class="modal fade" style="font-size: 14px;" id="<?php echo $string; ?>" tabindex="-1" role="dialog" aria-labelledby="acceptLabel"
+                                                aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" style="font-size: 16px; font-weight:bold;">Payment</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <form action="inc/gcash.php" style="width: 100%;" id="ticket" class="needs-validation" method="POST" enctype="multipart/form-data" novalidate>
+                                                            <div class="modal-body mb-4 mt-3">
+                                                                <div class="row w-100">
+                                                                    <div class="col-12 text-left">
+                                                                        <label for="">Amount Paid</label><label for="" class="required">*</label>
+                                                                        <input type="text" id="paid_amount"
+                                                                            placeholder="PHP 0,000.00" name="paid_amount"
+                                                                            class="form-control" required>
+                                                                    </div>
+                                                                </div>
+
+                                                                <input type="hidden" name="paymentinfoid" value="<?php echo $row['paymentinfoid'] ?>">
+                                                                <input type="hidden" name="adminid" value="<?php echo $adminid ?>">
+                                                                <input type="hidden" name="type" value="Full">
+                                                                <input type="hidden" name="balance" value="<?php echo $row['remaining_balance'] ?>">
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary"
+                                                                    data-dismiss="modal" style="font-size:14px;">Close</button>
+                                                                <button style="display:none" type="submit" name="update" id="submit" style="font-size:14px;">Next</button>
+                                                                <button type="button" class="btn btn-primary nextSubmit" style="font-size:14px;">Submit</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
                                     </tr>
                             <?php
                                 }
@@ -150,7 +204,7 @@ if (!$_SESSION['adminid']) {
             $('#myTable').DataTable({
                 layout: {
                     topStart: {
-                        buttons: ["copy", "csv", "excel", "pdf", "print"],
+                        buttons: ["copy", "pdf", "print"],
                     },
                 },
             });

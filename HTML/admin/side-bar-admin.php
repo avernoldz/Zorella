@@ -25,12 +25,27 @@ $res2 = mysqli_query($conn, $sql);
 // Fetch the results
 $row = mysqli_fetch_assoc($res2);
 
+$sql2 = "
+    SELECT
+        COUNT(CASE WHEN p.payment_type = 'Full Payment' THEN 1 END) AS full_count,
+        COUNT(CASE WHEN p.payment_type = 'Installment' THEN 1 END) AS installment_count
+    FROM
+        payment p;";
+
+// Execute the query
+$res2 = $conn->query($sql2);
+
+// Fetch the results
+$row2 = $res2->fetch_assoc();
+
 // Access the counts
 $count_ticket = $row['ticket_count'];
 $count_customize = $row['customize_count'];
 $count_educ = $row['educ_count'];
 $count_pending = $row['pending_count'];
 $count_tour = $row['tour_count'];
+$full_count = $row2['full_count'];
+$installment_count = $row2['installment_count'];
 
 ?>
 
@@ -156,7 +171,7 @@ $count_tour = $row['tour_count'];
                                             } ?>">
                                 <i class="fa-solid fa-credit-card fa-fw"></i>
                                 <span>Full Payments </span>
-                                <span class=" w-700">1</span>
+                                <span class=" w-700"><?php echo $full_count ?></span>
                             </li>
                         </a>
 
@@ -166,7 +181,17 @@ $count_tour = $row['tour_count'];
                                             } ?>">
                                 <i class="fa-solid fa-credit-card fa-fw"></i>
                                 <span>Installments</span>
-                                <span class=" w-700">10</span>
+                                <span class=" w-700"><?php echo $installment_count ?></span>
+                            </li>
+                        </a>
+
+                        <a href="gcash.php?adminid=<?php echo $adminid ?>">
+                            <li class="navi <?php if ($active == "Gcash") {
+                                                echo "active";
+                                            } ?>">
+                                <i class="fa-solid fa-receipt fa-fw"></i>
+                                <span>Gcash Receipt</span>
+                                <span></span>
                             </li>
                         </a>
                     </ul>

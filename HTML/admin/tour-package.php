@@ -239,9 +239,7 @@ if (!$_SESSION['adminid']) {
                 </div>
             </div>
         </div>
-
     </div>
-
 
     <script src="../user/js/validation.js"></script>
     <script>
@@ -278,6 +276,32 @@ if (!$_SESSION['adminid']) {
     <script>
         $(document).ready(function() {
 
+            if (alert == 1) {
+                toastr["success"]("Tour package added successfully")
+            }
+
+            if (alert == 3) {
+                toastr["success"]("Tour package archived successfully")
+            }
+
+            toastr.options = {
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": true,
+                "progressBar": false,
+                "preventDuplicates": false,
+                "positionClass": "toast-top-right",
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            }
+
             $('.archive').click(function() {
                 Swal.fire({
                     title: "Are you sure?",
@@ -310,6 +334,7 @@ if (!$_SESSION['adminid']) {
                             },
                             success: function(data) {
                                 $('#data').html(data);
+                                toastr["success"]("Tour package archived successfully");
                             },
                             error: function(e) {
                                 alert("error");

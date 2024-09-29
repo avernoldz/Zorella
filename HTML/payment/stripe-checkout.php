@@ -20,6 +20,12 @@ if (!$stripe_secret_key) {
     die('Stripe secret key is not configured.');
 }
 
+if (!$_SESSION['userid']) {
+    $_SESSION['redirect_url'] = $_SERVER['REQUEST_URI'];
+    header("Location: http://localhost/Zorella/HTML/index.php?login-first");
+    exit(); // Ensure no further code is executed
+}
+
 \Stripe\Stripe::setApiKey($stripe_secret_key);
 
 // Sanitize and validate input
@@ -44,6 +50,9 @@ if ($booking_type == 'Ticketed' || $booking_type == 'Customize') {
             pt.downpayment,
             pt.total_price,
             pt.remaining_balance,
+             p.payment_type,
+             pt.paid_date,
+             pt.price_to_pay,
             SUM(tc.adult + tc.child + tc.senior + tc.infant) AS pax,
             tc.departure as travel_date,
             tc.destination as tour
@@ -73,7 +82,10 @@ if ($booking_type == 'Ticketed' || $booking_type == 'Customize') {
             u.lastname,
             u.email,
             pt.downpayment,
+             p.payment_type,
             pt.total_price,
+            pt.paid_date,
+            pt.price_to_pay,
             pt.remaining_balance,
             tc.pax, 
             tc.sdate as travel_date
@@ -103,6 +115,9 @@ if ($booking_type == 'Ticketed' || $booking_type == 'Customize') {
             pt.downpayment,
             pt.total_price,
             pt.remaining_balance,
+            p.payment_type,
+            pt.paid_date,
+            pt.price_to_pay,
             tc.pax, 
             tc.tour_date as travel_date,
             tp.title as tour
@@ -139,20 +154,32 @@ function processBookingPayment($conn, $userid, $payment_id, $bookid, $query, $ma
     $price = null;
     $travel_date = null;
     $pax = null;
-    $remaining_balance = null;
     $tour = null;
+    $payment_type = null;
 
     if ($row = $res->fetch_assoc()) {
         $name = $row['firstname'] . " " . $row['lastname'];
         $email = $row['email'];
-        $price = $row['downpayment']; // Fetch price from database
+
+        if (!empty($row['paid_date'])) {
+            // Check if paid_date has a value
+            $price = $row['price_to_pay'];
+        } else {
+            $price = $row['downpayment'];
+        }
+        $balance = $row['remaining_balance'];
+        // Fetch price from database
         $travel_date = $row['travel_date']; // Fetch price from database
         $pax = $row['pax']; // Fetch price from database
         $remaining_balance = $row['remaining_balance']; // Fetch price from database
+        $payment_type = $row['payment_type']; // Fetch price from database
         $tour = isset($row['tour']) ? $row['tour'] : ''; // Fetch price from database
     } else {
         die('No matching records found.');
     }
+
+
+    $remaining_balance = $balance - $price;
 
     // Define product details with PHP currency
     $products = [
@@ -186,16 +213,33 @@ function processBookingPayment($conn, $userid, $payment_id, $bookid, $query, $ma
     // Create the checkout session
     try {
         // Update booking status
-        $update = "UPDATE booking SET status = 'Paid' WHERE bookid = ?";
+        if ($remaining_balance == '0.00' || $remaining_balance == 0.00) {
+            $stat = 'Installment';
+        } else {
+            $stat = 'Paid';
+        }
+        // $stat = ($payment_type == 'Installment') ? 'Installment' : 'Paid';
+
+        $update = "UPDATE booking SET status = '$stat' WHERE bookid = ?";
         $update_stmt = $conn->prepare($update);
         $update_stmt->bind_param('i', $bookid);
         $update_stmt->execute();
+
+        $update2 = "INSERT INTO installmenthistory (amount, paymentinfoid) VALUES (?, ?)";
+        $update2_stmt = $conn->prepare($update2);
+        $update2_stmt->bind_param('si', $price, $payment_id);
+        $update2_stmt->execute();
+
+        $update3 = "UPDATE paymentinfo SET remaining_balance = '$remaining_balance' WHERE paymentinfoid = ?";
+        $update3_stmt = $conn->prepare($update3);
+        $update3_stmt->bind_param('i', $payment_id);
+        $update3_stmt->execute();
 
         $body = generatePaymentPDF($name, $tour, $price, $pax, $travel_date, $remaining_balance);
         $pdfFilePath = savePDFConfirm($body, $name, 'confirm-payment');
         $confirmation_pdf = basename($pdfFilePath);
 
-        sendEmail($mail, $email, $pdfFilePath, $tour);
+        sendEmail($mail, $email, $pdfFilePath, $tour, 'Acknowledgement Receipt ');
 
         $checkout_session = \Stripe\Checkout\Session::create([
             'mode' => 'payment',
@@ -263,7 +307,7 @@ function generatePaymentPDF($name, $tour, $price, $pax, $travel_date, $remaining
                     <b style="text-decoration: underline;text-transform:uppercase"><?php echo "$tour $pax PAX (" . date('M j, Y', strtotime($travel_date)) . ")" ?></b>
                     the sum of
                     <b style="text-decoration: underline;"><?php echo strtoupper(numberToWords($price)) ?> PESOS (<?php echo 'PHP ' . number_format($price, 2)  ?>)</b> in partial/full payment, balance for
-                    <b style="text-decoration: underline;">PHP <?php echo number_format($remaining_balance, 0) ?>.</b>
+                    <b style="text-decoration: underline;">PHP <?php echo number_format($remaining_balance, 2) ?>.</b>
                 </p>
             </div>
             <div class="col">

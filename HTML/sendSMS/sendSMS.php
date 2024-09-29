@@ -1,10 +1,17 @@
 <?php
 require 'C:\xampp\htdocs\Zorella\vendor\autoload.php'; // Include the Composer autoload file
 require 'C:\xampp\htdocs\Zorella\inc\Include.php'; // Include the Composer autoload file
+include 'C:\xampp\htdocs\Zorella\HTML\user\inc\select.php';
 
 use Twilio\Rest\Client;
 
-processDueDates($conn);
+$allResults = array_merge(
+    getEducationalResults($conn),
+    getTicketResults($conn),
+    getTourPackageResults($conn)
+);
+
+processDueDates($conn, $allResults);
 
 function checkDates($conn)
 {
@@ -24,7 +31,6 @@ function checkDates($conn)
 
     return $rows; // Return the array of rows
 }
-
 
 function sendSms($to, $message)
 {
@@ -51,9 +57,9 @@ function sendSms($to, $message)
     }
 }
 
-function processDueDates($conn)
+function processDueDates($conn, $allResults)
 {
-    $rows = checkDates($conn);
+    $rows = $allResults;
     $currentDate = new DateTime();
 
     foreach ($rows as $row) {
@@ -85,7 +91,8 @@ function processDueDates($conn)
                     // Send SMS to the user's phone number
                     sendSms($phoneNumber, $message);
                 } else {
-                    echo "NOT APPLICABLE " . $dueDateTime->format('F j, Y') . " PHONE NUMBER: $phoneNumber <br>";
+                    echo $dueDateTime->format('F j, Y') . " PHONE NUMBER: $phoneNumber <br>";
+                    echo "<a href='http://localhost/Zorella/HTML/payment/stripe-checkout.php?payment_id=$row[paymentinfoid]&userid=$row[userid]&bookid=$row[bookid]&booking_type=$row[booking_type]&booking_id=$row[booking_id]'>LINK TO PAY</a> <br>";
                 }
             }
         }

@@ -117,7 +117,7 @@ function processBooking($conn, $mail)
     $insertPaymentQuery = createInsertPaymentQuery($bookingData, $confirmation_pdf);
 
     if (mysqli_query($conn, $insertPaymentQuery)) {
-        sendEmail($mail, $firstRow['send_email'], $pdfFilePath, $firstRow['tour_title']); // Corrected email variable
+        sendEmail($mail, $firstRow['send_email'], $pdfFilePath, $firstRow['tour_title'], 'Confirmation Booking '); // Corrected email variable
 
         // Update booking status in the database
         mysqli_query($conn, $updateStatusQuery);
@@ -233,7 +233,7 @@ function createInsertPaymentQuery($bookingData, $confirmation_pdf)
     return "INSERT INTO `paymentinfo`(`confirmation_pdf`, `payment_id`, `total_price`, `downpayment`, `price_to_pay`, 
             `installment_number`, `remaining_balance`, `due_date`, `pax_price`, `terms`, `userid`, `adminid`)
             VALUES ('$confirmation_pdf', '{$bookingData['paymentid']}', '{$bookingData['total_price']}', '{$bookingData['downpayment']}', 
-            '{$bookingData['price_to_pay']}', '{$bookingData['installment_number']}', '{$bookingData['remaining_balance']}', 
+            '{$bookingData['price_to_pay']}', '{$bookingData['installment_number']}', '{$bookingData['total_price']}', 
             '{$bookingData['due_date']}', '{$bookingData['pax_price']}', '{$bookingData['terms']}', 
             '{$bookingData['userid']}', '{$bookingData['adminid']}')";
 }
@@ -265,6 +265,9 @@ function generateConfirmationPDF($firstRow, $tourRows, $bookingData, $totalPasse
     $htmlContent = $bookingData['terms'];
     // Convert HTML to plain text and replace line breaks
     $textContent = trim(preg_replace('/\r\n|\r|\n/', '<br>', $htmlContent));
+
+    $imageData = base64_encode(file_get_contents('../../../Assets/icon.png'));
+    $src = 'data:image/png;base64,' . $imageData;
     ob_start();
 ?>
     <!DOCTYPE html>
@@ -286,6 +289,10 @@ function generateConfirmationPDF($firstRow, $tourRows, $bookingData, $totalPasse
 
     <body>
         <div class="row w-100">
+            <div style="float:left;">
+                <img src="<?php echo $src ?>" alt="zorella-logo" height="100px" width="100px">
+            </div>
+
             <div style="text-align:center;">
                 <p><strong>ZORELLA TRAVEL AND TOURS</strong><br>
                     CALUMPANG LILIW LAGUNA<br>
@@ -345,7 +352,7 @@ function generateConfirmationPDF($firstRow, $tourRows, $bookingData, $totalPasse
                             <small style="color: red;">to be paid at your earliest convenience</small>
                         </td>
                         <td style="border: 1px solid #000000; padding: 6px;">
-                            REMAINING BALANCE: <strong>PHP <?php echo number_format($bookingData['remaining_balance'], 2) ?></strong>
+                            REMAINING BALANCE: <strong>PHP <?php echo number_format($bookingData['total_price'], 2) ?></strong>
                         </td>
                     </tr>
                     <tr>
@@ -411,7 +418,7 @@ function savePDF($body, $firstRow, $path)
     return $pdfFilePath;
 }
 
-function sendEmail($mail, $recipientEmail, $pdfFilePath, $title) // Changed parameter name for clarity
+function sendEmail($mail, $recipientEmail, $pdfFilePath, $title, $message) // Changed parameter name for clarity
 {
     $mail->CharSet = 'UTF-8';
     $mail->isSMTP();
@@ -429,8 +436,8 @@ function sendEmail($mail, $recipientEmail, $pdfFilePath, $title) // Changed para
 
     // Email content
     $mail->isHTML(true);
-    $mail->Subject = "Confirmation Booking " . $title; // $firstRow should be passed or made accessible
-    $mail->Body    = "Please find attached the confirmation booking PDF.";
+    $mail->Subject = $message . $title; // $firstRow should be passed or made accessible
+    $mail->Body    = "Please find attached the PDF.";
     $mail->addAttachment($pdfFilePath);
 
     // Send email

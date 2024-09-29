@@ -4,6 +4,7 @@ session_regenerate_id();
 
 if (!$_SESSION['adminid']) {
     header("Location:../index.php?Login-first");
+    exit();
 }
 ?>
 <!DOCTYPE html>
@@ -115,12 +116,15 @@ if (!$_SESSION['adminid']) {
                 <?php if ($firstRow['status'] == 'Pending'): ?>
                     <div class="col flex justify-content-end accept">
                         <button type="button" data-target="#accept" data-toggle="modal" class="btn btn-success"><i class="fa-solid fa-check fa-fw "></i>Accept</button>
-                        <!-- <button type="button" class="btn btn-secondary"><i class="fa-solid fa-xmark fa-fw text-danger"></i> Reject</button> -->
+                        <button type="button" data-target="#reject" data-toggle="modal" class="btn btn-secondary reject"><i class="fa-solid fa-xmark fa-fw text-danger"></i> Reject</button>
+                    </div>
+                <?php elseif ($firstRow['status'] == 'Rejected'): ?>
+                    <div class="col flex justify-content-end accept">
+                        <button type="button" class="btn btn-secondary reject"><i class="fa-solid fa-xmark fa-fw text-danger"></i> Rejected</button>
                     </div>
                 <?php else: ?>
                     <div class="col flex justify-content-end accept">
                         <?php echo "<a style='font-size: 12px;' class='btn btn-success' href='confirmation-bookings/$frow[confirmation_pdf]' target='_blank'>Download Confirmation Booking</a>" ?>
-                        <!-- <button type="button" class="btn btn-secondary"><i class="fa-solid fa-xmark fa-fw text-danger"></i> Reject</button> -->
                     </div>
                 <?php endif; ?>
             </div>
@@ -154,6 +158,8 @@ if (!$_SESSION['adminid']) {
                                 echo "<p class='text-warning'>Pending</p>";
                             } else if ($firstRow['status'] == 'Payment') {
                                 echo "<p class='text-info'>Confirmed Booking, waiting for payment</p>";
+                            } else if ($firstRow['status'] == 'Rejected') {
+                                echo "<p class='text-danger'>Rejected</p>";
                             } else {
                                 echo "<p class='text-success'>Paid</p>";
                             }
@@ -396,6 +402,34 @@ if (!$_SESSION['adminid']) {
             </div>
         </div>
 
+        <div class="modal fade" id="reject" tabindex="-1" role="dialog" aria-labelledby="acceptLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <form action="inc/accept-booking.php" style="width: 100%;" id="reject" class="needs-validation" method="POST" enctype="multipart/form-data" novalidate>
+                        <div class="modal-body mb-3 mt-3">
+                            <div class="row w-100">
+                                <div class="col text-center">
+                                    <i class="fa-solid fa-triangle-exclamation fa-fw text-danger mb-2" style="font-size: 32px;"></i>
+                                    <h1 style="font-size: 22px;" class="mb-1">Reject Booking</h1>
+                                    <p style="font-size: 14px;padding:8px 24px;">Are you sure you want to reject this booking? This action cannot be undone.</p>
+                                </div>
+                            </div>
+                            <input type="hidden" name="bookid" value="<?php echo $bookid ?>">
+                            <input type="hidden" name="adminid" value="<?php echo $adminid ?>">
+                            <input type="hidden" name="booking_id" value="<?php echo $ticketid ?>">
+                            <input type="hidden" name="booking_type" value="<?php echo $bookingtype ?>">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary"
+                                data-dismiss="modal">Close</button>
+                            <button type="submit" name="reject-book" id="submit" class="btn btn-danger">Reject</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
     </div>
     <script>
         var installmentType = "<?php echo $frow['installment_type']; ?>";
@@ -409,6 +443,30 @@ if (!$_SESSION['adminid']) {
             toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright | link image | code',
             height: 500,
         });
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(window.location.search);
+        const alert = urlParams.get('alert');
+
+        if (alert == 4) {
+            toastr["success"]("Request for booking rejected successfully")
+        }
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": true,
+            "progressBar": false,
+            "preventDuplicates": false,
+            "positionClass": "toast-bottom-center",
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        }
     </script>
 </body>
 

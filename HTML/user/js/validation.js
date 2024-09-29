@@ -147,6 +147,7 @@ $(document).ready(function () {
   function handleFormSubmission(buttonId, ajaxUrl) {
     $(buttonId).click(function (e) {
       var form = $(this).closest("form")[0];
+
       var isCustomValid =
         validateEmails(form) && validatePhones(form) && validateImages(form);
 
@@ -201,6 +202,7 @@ $(document).ready(function () {
     });
   }
 
+  handleFormSubmission(".nextSubmit");
   handleFormSubmission("#next"); // For the button with id 'next'
   handleFormSubmission("#next-t", "inc/team-building.php");
 

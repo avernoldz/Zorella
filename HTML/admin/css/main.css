@@ -185,7 +185,7 @@ label {
   background: var(--maindark);
 } */
 
-.main .accept button:nth-child(2) {
+.main .reject {
   color: var(--font);
   border: 1px solid rgb(194, 194, 194);
   background: white;

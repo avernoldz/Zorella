@@ -473,7 +473,7 @@ if (!$_SESSION['userid']) {
 
             $.ajax({
                 type: 'post', // the method (could be GET btw)
-                url: '../Faculty AJAX/total-passenger.php', // The file where my php code is
+                url: '../AJAX/total-passenger.php', // The file where my php code is
                 data: {
                     adult: adult, // all variables i want to pass. In this case, only one.
                     child: child, // all variables i want to pass. In this case, only one.

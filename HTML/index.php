@@ -12,6 +12,7 @@ if (isset($_GET['Logout'])) {
     echo "<script>window.location.href='index.php';</script>";
 }
 
+
 // if(isset($_SESSION['userid'])) {
 //     header("Location:dashboard.php?userid=$_SESSION[userid]");
 // }
@@ -366,6 +367,7 @@ if (isset($_GET['Logout'])) {
                                 aria-describedby="emailHelp" placeholder="&#xf023; Password"
                                 style="font-family:Arial, FontAwesome" required>
                         </div>
+
                         <button type="submit" class="btn btn-primary" name="sign-up" style="width:100%;">Sign
                             up</button>
                     </div>
@@ -426,6 +428,10 @@ if (isset($_GET['Logout'])) {
                             <input type="password" class="form-control form" id="password-sign" name="password-sign"
                                 aria-describedby="emailHelp" placeholder="&#xf023; Password"
                                 style="font-family:Arial, FontAwesome" required>
+                            <div class="div w-100 text-right mt-1">
+                                <input type="checkbox" name="show" id="showPassword" class="text-right">
+                                <small class="text-right" class="mr-3">Show Password</small>
+                            </div>
                         </div>
 
                         <button type="submit" class="btn btn-primary" name="sign-in" style="width:100%;">Sign
@@ -490,6 +496,10 @@ if (isset($_GET['Logout'])) {
                             <input type="password" class="form-control form" id="password" name="password-admin"
                                 aria-describedby="emailHelp" placeholder="&#xf023; Password"
                                 style="font-family:Arial, FontAwesome" required>
+                            <div class="div w-100 text-right mt-1">
+                                <input type="checkbox" name="show" id="showPassword" class="text-right">
+                                <small class="text-right" class="mr-3">Show Password</small>
+                            </div>
                         </div>
 
                         <button type="submit" name="admin" class="btn btn-primary" style="width:100%;">Sign in</button>
@@ -541,7 +551,16 @@ if (isset($_GET['Logout'])) {
 
             if (password_verify($password, $pwd_hashed)) {
                 $_SESSION['userid'] = $rows['userid'];
-                echo "<script>window.location.href='user/dashboard.php?userid=$rows[userid]';</script>";
+
+                if (isset($_SESSION['redirect_url'])) {
+                    $redirectUrl = 'http://localhost' . $_SESSION['redirect_url'];
+                    unset($_SESSION['redirect_url']); // Clear the session variable
+                    // header("Location: $redirectUrl");
+                    echo "<script>window.location.href='$redirectUrl';</script>";
+                    exit();
+                } else {
+                    echo "<script>window.location.href='user/dashboard.php?userid=$rows[userid]';</script>";
+                }
             } else {
                 echo "<script>window.location.href='index.php?wrong-password-or-email';</script>";
             }
@@ -592,6 +611,17 @@ if (isset($_GET['Logout'])) {
             icon: "success"
         });
     }
+
+    $('#showPassword').change(function() {
+        var form = $(this).closest('form');
+        var passwordInput = form.find('input[type="password"], input[type="text"]'); // Select both types
+
+        if ($(this).is(':checked')) {
+            passwordInput.attr('type', 'text'); // Show password
+        } else {
+            passwordInput.attr('type', 'password'); // Hide password
+        }
+    });
 
     $('#here-admin').click(function() {
         $('#sign-admin').modal('hide');

@@ -90,49 +90,11 @@ function random_strings($length_of_string)
     include "side-bar.php";
     include "header.php";
 
-    // $query = "SELECT
-    // u.userid,
-    // u.firstname,
-    // u.lastname,
-    // b.bookid,
-    // b.booking_id,
-    // b.booking_type,
-    // b.status AS stat,
-    // b.branch AS branchs,
-    // b.created_at AS date_created,
-    // tb.*,
-    // eb.*,
-    // eb.pax AS eb_pax,
-    // eb.created_at AS date_eb,
-    // tc.*,
-    // tp.*,
-    // pt.confirmation_pdf,
-    // pt.payment_id,
-    // p.paymentid,
-    // pt.paymentinfoid
-    // FROM
-    //     booking b
-    // INNER JOIN
-    //     user u ON b.userid = u.userid
-    // LEFT JOIN
-    //     educational eb ON b.booking_type = 'Educational' AND b.booking_id = eb.educationalid
-    // LEFT JOIN
-    //     tourbooking tc ON b.booking_type = 'Tour Package' AND b.booking_id = tc.tour_bookid
-    // LEFT JOIN
-    //     tourpackage tp ON tc.tourid = tp.tourid
-    // LEFT JOIN
-    //     payment p ON p.booking_id = b.booking_id
-    // LEFT JOIN
-    //     paymentinfo pt ON pt.payment_id = p.paymentid
-    // LEFT JOIN
-    //     ticket tb ON b.booking_id = tb.ticketid
-    //     AND (b.booking_type = 'Ticketed' OR b.booking_type = 'Customize')
-    // WHERE
-    //     u.userid = '$userid'
-    // ORDER BY
-    //     b.bookid DESC";
-
-    // $res = mysqli_query($conn, $query);
+    $allResults = array_merge(
+        getEducationalResults($conn, $userid),
+        getTicketResults($conn, $userid),
+        getTourPackageResults($conn, $userid)
+    );
 
     ?>
     <div class="main">
@@ -288,6 +250,8 @@ function random_strings($length_of_string)
                                                                         echo "<span class='text-warning'>Pending</span>";
                                                                     } else if ($row['stat'] == 'Payment') {
                                                                         echo "<span class='text-info'>Confirmed Booking, waiting for payment</span>";
+                                                                    } else if ($row['stat'] == 'Installment') {
+                                                                        echo "<span class='text-info'>Installment Payments</span>";
                                                                     } else {
                                                                         echo "<span class='text-success'>Paid</span>";
                                                                     }
@@ -300,10 +264,15 @@ function random_strings($length_of_string)
                                                                     <td class="w-700"><?php echo "<a style='font-size: 12px;' class='btn btn-sm btn-success' href='../admin/confirmation-bookings/$row[confirmation_pdf]' target='_blank'>Download Confirmation Booking</a>" ?></td>
                                                                 </tr>
                                                             <?php endif; ?>
+
                                                             <?php if ($row['stat'] == 'Payment'): ?>
                                                                 <tr>
                                                                     <td>Payment</td>
-                                                                    <td class="w-700"><?php echo "<a style='font-size: 12px;' class='btn btn-sm btn-danger' href='../payment/stripe-checkout.php?payment_id=$row[paymentinfoid]&userid=$row[userid]&bookid=$row[bookid]&booking_type=$row[booking_type]&booking_id=$row[booking_id]'>Pay Here</a>" ?></td>
+                                                                    <td class="w-700">
+                                                                        <!-- <p style='font-size: 12px;' class='btn btn-sm btn-primary' data-target='#gcash' data-toggle='modal'>Gcash</p> -->
+                                                                        <?php echo "<a style='font-size: 12px;' class='btn btn-sm btn-primary' href='gcash.php?userid=$userid&payment=$row[downpayment]&infoid=$row[paymentinfoid]'>Gcash</a>" ?>
+                                                                        <?php echo "<a style='font-size: 12px;' class='btn btn-sm btn-danger' href='../payment/stripe-checkout.php?payment_id=$row[paymentinfoid]&userid=$row[userid]&bookid=$row[bookid]&booking_type=$row[booking_type]&booking_id=$row[booking_id]'>Debit/Credit Card</a>" ?>
+                                                                    </td>
                                                                 </tr>
                                                             <?php endif; ?>
                                                         </table>
@@ -378,6 +347,8 @@ function random_strings($length_of_string)
                                                                         echo "<span class='text-warning'>Pending</span>";
                                                                     } else if ($row['stat'] == 'Payment') {
                                                                         echo "<span class='text-info'>Confirmed Booking, waiting for payment</span>";
+                                                                    } else if ($row['stat'] == 'Installment') {
+                                                                        echo "<span class='text-info'>Installment Payments</span>";
                                                                     } else {
                                                                         echo "<span class='text-success'>Paid</span>";
                                                                     }
@@ -393,7 +364,11 @@ function random_strings($length_of_string)
                                                             <?php if ($row['stat'] == 'Payment'): ?>
                                                                 <tr>
                                                                     <td>Payment</td>
-                                                                    <td class="w-700"><?php echo "<a style='font-size: 12px;' class='btn btn-sm btn-danger' href='../payment/stripe-checkout.php?payment_id=$row[paymentinfoid]&userid=$row[userid]&bookid=$row[bookid]&booking_type=$row[booking_type]&booking_id=$row[booking_id]'>Pay Here</a>" ?></td>
+                                                                    <td class="w-700">
+                                                                        <!-- <p style='font-size: 12px;' class='btn btn-sm btn-primary' data-target='#gcash' data-toggle='modal'>Gcash</p> -->
+                                                                        <?php echo "<a style='font-size: 12px;' class='btn btn-sm btn-primary' href='gcash.php?userid=$userid&payment=$row[downpayment]&infoid=$row[paymentinfoid]'>Gcash</a>" ?>
+                                                                        <?php echo "<a style='font-size: 12px;' class='btn btn-sm btn-danger' href='../payment/stripe-checkout.php?payment_id=$row[paymentinfoid]&userid=$row[userid]&bookid=$row[bookid]&booking_type=$row[booking_type]&booking_id=$row[booking_id]'>Debit/Credit Card</a>" ?>
+                                                                    </td>
                                                                 </tr>
                                                             <?php endif; ?>
                                                         </table>
@@ -453,6 +428,8 @@ function random_strings($length_of_string)
                                                                         echo "<span class='text-warning'>Pending</span>";
                                                                     } else if ($row['stat'] == 'Payment') {
                                                                         echo "<span class='text-info'>Confirmed Booking, waiting for payment</span>";
+                                                                    } else if ($row['stat'] == 'Installment') {
+                                                                        echo "<span class='text-info'>Installment Payments</span>";
                                                                     } else {
                                                                         echo "<span class='text-success'>Paid</span>";
                                                                     }
@@ -462,13 +439,19 @@ function random_strings($length_of_string)
                                                             <?php if ($row['stat'] == 'Payment'): ?>
                                                                 <tr>
                                                                     <td style="vertical-align:middle;">Confirmation</td>
-                                                                    <td class="w-700"><?php echo "<a style='font-size: 12px;' class='btn btn-sm btn-success' href='../admin/confirmation-bookings/$row[confirmation_pdf]' target='_blank'>Download Confirmation Booking</a>" ?></td>
+                                                                    <td class="w-700">
+                                                                        <?php echo "<a style='font-size: 12px;' class='btn btn-sm btn-success' href='../admin/confirmation-bookings/$row[confirmation_pdf]' target='_blank'>Download Confirmation Booking</a>" ?>
+                                                                    </td>
                                                                 </tr>
                                                             <?php endif; ?>
                                                             <?php if ($row['stat'] == 'Payment'): ?>
                                                                 <tr>
                                                                     <td>Payment</td>
-                                                                    <td class="w-700"><?php echo "<a style='font-size: 12px;' class='btn btn-sm btn-danger' href='../payment/stripe-checkout.php?payment_id=$row[paymentinfoid]&userid=$row[userid]&bookid=$row[bookid]&booking_type=$row[booking_type]&booking_id=$row[booking_id]'>Pay Here</a>" ?></td>
+                                                                    <td class="w-700">
+                                                                        <!-- <p style='font-size: 12px;' class='btn btn-sm btn-primary' data-target='#gcash' data-toggle='modal'>Gcash</p> -->
+                                                                        <?php echo "<a style='font-size: 12px;' class='btn btn-sm btn-primary' href='gcash.php?userid=$userid&payment=$row[downpayment]&infoid=$row[paymentinfoid]'>Gcash</a>" ?>
+                                                                        <?php echo "<a style='font-size: 12px;' class='btn btn-sm btn-danger' href='../payment/stripe-checkout.php?payment_id=$row[paymentinfoid]&userid=$row[userid]&bookid=$row[bookid]&booking_type=$row[booking_type]&booking_id=$row[booking_id]'>Debit/Credit Card</a>" ?>
+                                                                    </td>
                                                                 </tr>
                                                             <?php endif; ?>
                                                         </table>
@@ -525,6 +508,15 @@ function random_strings($length_of_string)
                                 data-dismiss="modal">Close</button>
                         </div>
                     </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="gcash" tabindex="-1" role="dialog" aria-labelledby="successBooking"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <img src="../../Assets/gcash.jpg" alt="gcash-qr">
                 </div>
             </div>
         </div>
@@ -588,30 +580,33 @@ function random_strings($length_of_string)
             })();
         });
 
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": true,
+            "progressBar": false,
+            "preventDuplicates": false,
+            "positionClass": "toast-top-right",
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        }
+
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(window.location.search);
         const alert = urlParams.get('alert');
 
         if (alert == 1) {
-            toastr["success"]("Request for quotation sent successfully")
-
-            toastr.options = {
-                "closeButton": true,
-                "debug": false,
-                "newestOnTop": true,
-                "progressBar": false,
-                "preventDuplicates": false,
-                "positionClass": "toast-bottom-center",
-                "onclick": null,
-                "showDuration": "300",
-                "hideDuration": "1000",
-                "timeOut": "5000",
-                "extendedTimeOut": "1000",
-                "showEasing": "swing",
-                "hideEasing": "linear",
-                "showMethod": "fadeIn",
-                "hideMethod": "fadeOut"
-            }
+            toastr["success"]("Request for quotation sent successfully");
+        }
+        if (alert == 2) {
+            toastr["success"]("Payment for GCash has been sent. Awaiting approval");
         }
     </script>
 </body>
