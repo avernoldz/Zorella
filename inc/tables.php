@@ -13,6 +13,33 @@
 	$options = ['cost' => 12,];
 
 
+	$gcash = "CREATE TABLE gcash(
+		id int(100) AUTO_INCREMENT PRIMARY KEY,
+		payment DECIMAL(20, 2) NOT NULL,
+		img varchar(250) NOT NULL,
+		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+		paymentinfoid int NOT NULL
+		)";
+
+	if (mysqli_query($conn, $gcash)) {
+		echo "Table gcash";
+	} else {
+		echo "Error creating Table: " . mysqli_error($conn);
+	}
+
+	$installmenthistory = "CREATE TABLE installmenthistory(
+		id int(100) AUTO_INCREMENT PRIMARY KEY,
+		paid_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+		amount DECIMAL(20, 2) NOT NULL,
+		paymentinfoid int NOT NULL
+		)";
+
+	if (mysqli_query($conn, $installmenthistory)) {
+		echo "Table installmenthistory";
+	} else {
+		echo "Error creating Table: " . mysqli_error($conn);
+	}
+
 	$paymentinfo = "CREATE TABLE paymentinfo(
 		paymentinfoid int(100) AUTO_INCREMENT PRIMARY KEY,
 		payment_id int(100) NOT NULL,
@@ -23,7 +50,7 @@
 		pax_price DECIMAL(20, 2) NOT NULL,
 		installment_number int(10) NOT NULL,
 		due_date TEXT,
-		paid_date TIMESTAMP NULL,
+		paid_date TEXT NULL,
 		terms TEXT,
 		confirmation_pdf varchar(150) NULL,
 		payment_pdf varchar(150) NULL,
@@ -61,7 +88,7 @@
 		description varchar(255) NOT NULL,
 		duration  varchar(50) NOT NULL,
 		tsdates TEXT NOT NULL,
-		tsdate TEXT NOT NULL,
+		tedates TEXT NOT NULL,
 		img varchar(100) NOT NULL,
 		itinerary TEXT,
 		type varchar(25) NOT NULL,

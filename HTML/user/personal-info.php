@@ -148,8 +148,8 @@ if (!$_SESSION['userid']) {
                                     <div class="row mt-4 wd-100 ids">
                                         <div class="col-4">
                                             <div class="form-group">
-                                                <label for="passport">Passport</label><label for="" class="required">*</label>
-                                                <input type="file" class="form-control-file" name="passport<?php echo "[$x]" ?>" required>
+                                                <label for="passport">Passport</label>
+                                                <input type="file" class="form-control-file" name="passport<?php echo "[$x]" ?>">
 
                                                 <div class="img invalid-feedback">
                                                     Please upload a passport

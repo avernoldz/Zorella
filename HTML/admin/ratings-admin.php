@@ -84,6 +84,7 @@ if (!$_SESSION['adminid']) {
                     <?php
                         }
                     } else {
+                        echo "<div class='text-center col'> No data found</div>";
                     }
                     ?>
                 </div>

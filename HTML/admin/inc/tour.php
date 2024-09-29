@@ -83,7 +83,7 @@ if (isset($_POST['tour'])) {
         VALUES ('$title', '$price', '$bsdate', '$bedate','$description','$imgFilename', '$datesJson', '$datesJson2', '$itinerary', '$type', '$adminid')";
 
     if (mysqli_query($conn, $insert)) {
-        header("Location: ../tour-package.php?adminid=$adminid");
+        header("Location: ../tour-package.php?adminid=$adminid&aalert=1");
     } else {
         echo mysqli_error($conn);
     }

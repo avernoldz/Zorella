@@ -550,7 +550,7 @@ if (!$_SESSION['userid']) {
                             </div>
                         </div>
                         <div class="col-12 mt-4">
-                            <p class="w-700">Select a <span style="color: var(--maindark);">Payment</span> Method</p>
+                            <p class="w-700">Select a <span style="color: var(--maindark);">Preferred Payment</span> Method</p>
                         </div>
                         <div class="row wd-100">
                             <div class="col-12 payment-card">
@@ -562,7 +562,6 @@ if (!$_SESSION['userid']) {
                                         <div class="imgName">
                                             <div class="imgContainer visa">
                                                 <img src="https://logolook.net/wp-content/uploads/2024/02/GCash-Logo.png" alt="gcash-payment">
-
                                             </div>
                                             <span class="name">GCASH</span>
                                         </div>
