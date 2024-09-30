@@ -190,12 +190,12 @@ if (!$_SESSION['adminid']) {
 
                                 <div class="row w-100 date-inputs">
                                     <div class="col-4 mt-3">
-                                        <label for="">Trave Date Start</label><label for="" class="required">*</label>
+                                        <label for="">Travel Date Start</label><label for="" class="required">*</label>
                                         <input type="date" id="tsdates" name="tsdates[]" class="form-control" required>
                                     </div>
 
                                     <div class="col-4 mt-3">
-                                        <label for="">Trave Date End</label><label for="" class="required">*</label>
+                                        <label for="">Travel Date End</label><label for="" class="required">*</label>
                                         <input type="date" id="tedates" name="tedates[]" class="form-control" required>
                                     </div>
 
@@ -357,12 +357,12 @@ if (!$_SESSION['adminid']) {
             $('.add-date').click(function() {
                 var newDate = `<div class="row w-100 date-inputs">
                                     <div class="col-4 mt-3">
-                                        <label for="">Trave Date Start</label><label for="" class="required">*</label>
+                                        <label for="">Travel Date Start</label><label for="" class="required">*</label>
                                         <input type="date" id="tsdates" name="tsdates[]" class="form-control" required>
                                     </div>
 
                                     <div class="col-4 mt-3">
-                                        <label for="">Trave Date End</label><label for="" class="required">*</label>
+                                        <label for="">Travel Date End</label><label for="" class="required">*</label>
                                         <input type="date" id="tedates" name="tedates[]" class="form-control" required>
                                     </div>
                                 </div>`;

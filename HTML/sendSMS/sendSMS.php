@@ -32,31 +32,6 @@ function checkDates($conn)
     return $rows; // Return the array of rows
 }
 
-function sendSms($to, $message)
-{
-    // Your Twilio credentials
-    $accountSid = 'ACac806c6af3b3fca8e4b782b9faf55960';
-    $authToken = '659516f2d12555ac47d684876cf48167';
-    $twilioNumber = '+12548266857';
-
-    // Create a new Twilio client
-    $client = new Client($accountSid, $authToken);
-
-    // Send the SMS
-    try {
-        $client->messages->create(
-            $to, // The phone number you want to send to
-            [
-                'from' => $twilioNumber,
-                'body' => $message
-            ]
-        );
-        echo "Message sent successfully!";
-    } catch (Exception $e) {
-        echo "Error: " . $e->getMessage();
-    }
-}
-
 function processDueDates($conn, $allResults)
 {
     $rows = $allResults;
@@ -85,7 +60,7 @@ function processDueDates($conn, $allResults)
 
                     // Format the phone number
                     if (strpos($phoneNumber, '0') === 0) {
-                        $phoneNumber = '+69' . substr($phoneNumber, 1); // Replace the first '0' with '+69'
+                        $phoneNumber = '+63' . substr($phoneNumber, 1); // Replace the first '0' with '+69'
                     }
 
                     // Send SMS to the user's phone number

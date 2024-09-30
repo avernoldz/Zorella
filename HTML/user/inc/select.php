@@ -1,6 +1,10 @@
 <?php
 $allResults = []; // Initialize an array to hold all results
 
+require 'C:\xampp\htdocs\Zorella\vendor\autoload.php';
+
+use Twilio\Rest\Client;
+
 // Function to fetch results
 function fetchResults($result)
 {
@@ -167,3 +171,28 @@ function getTourPackageResults($conn, $userid = null)
 // Close the connection
 
 // Now $allResults contains combined results from all queries
+
+function sendSms($to, $message)
+{
+    // Your Twilio credentials
+    $accountSid = 'ACac806c6af3b3fca8e4b782b9faf55960';
+    $authToken = '5c58c69d3865c6acfbda115dbb41c6bc';
+    $twilioNumber = '+12548266857';
+
+    // Create a new Twilio client
+    $client = new Client($accountSid, $authToken);
+
+    // Send the SMS
+    try {
+        $client->messages->create(
+            $to, // The phone number you want to send to
+            [
+                'from' => $twilioNumber,
+                'body' => $message
+            ]
+        );
+        echo "Message sent successfully!";
+    } catch (Exception $e) {
+        echo "Error: " . $e->getMessage();
+    }
+}

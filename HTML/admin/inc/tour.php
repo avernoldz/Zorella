@@ -77,7 +77,7 @@ if (isset($_POST['tour'])) {
     // Access the files for each index
     $imgFilename = uploadFile($img, $target_dir, $adminid);
     $datesJson = json_encode($datesArrayStart);
-    $datesJson2 = json_encode($datesArrayStart);
+    $datesJson2 = json_encode($datesArrayEnd);
 
     $insert = "INSERT INTO `tourpackage`( `title`, `price`, `bsdate`,`bedate`, `description`, `img`, `tsdates`, `tedates`, `itinerary`, `type`, `adminid`)
         VALUES ('$title', '$price', '$bsdate', '$bedate','$description','$imgFilename', '$datesJson', '$datesJson2', '$itinerary', '$type', '$adminid')";

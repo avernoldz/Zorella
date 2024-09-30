@@ -1,7 +1,10 @@
 <?php
 session_start();
 include '../../../inc/Include.php';
+require 'C:\xampp\htdocs\Zorella\vendor\autoload.php';
+include 'C:\xampp\htdocs\Zorella\HTML\user\inc\select.php';
 
+use Twilio\Rest\Client;
 
 if (isset($_POST['update'])) {
     $price = intval(mysqli_real_escape_string($conn, $_POST['paid_amount']));
@@ -93,12 +96,28 @@ if (isset($_POST['gcash'])) {
     $infoid = mysqli_real_escape_string($conn, $_POST['infoid']);
     $img = $_FILES['img'];
 
+    $phone = "SELECT phonenumber, firstname FROM user WHERE userid = '$userid'";
+    $res = mysqli_query($conn, $phone);
+    $rowP = mysqli_fetch_array($res);
+
+    $phoneNumber = $rowP['phonenumber'];
+    $name = $rowP['firstname'];
+
+    $message = "Hi " . $name . ", thank you for your payment! Please wait for admin approval. We’ll update you as soon as possible. \n\nZorella Travel and Tours";
+
+    // Format the phone number
+    if (strpos($phoneNumber, '0') === 0) {
+        $phoneNumber = '+63' . substr($phoneNumber, 1); // Replace the first '0' with '+69'
+    }
+
     // Access the files for each index
     $imgFilename = uploadFile($img, $target_dir, $userid, $payment);
     $query = "INSERT INTO gcash(payment, paymentinfoid, img) VALUES ('$payment', '$infoid', '$imgFilename')";
-    if (mysqli_query($conn, $query)) {
-        header("Location: http://localhost/Zorella/HTML/user/my-booking.php?userid=$userid&alert=2");
-    }
 
+    if (mysqli_query($conn, $query)) {
+
+        sendSms($phoneNumber, $message);
+        // header("Location: http://localhost/Zorella/HTML/user/my-booking.php?userid=$userid&alert=2");
+    }
     exit();
 }
