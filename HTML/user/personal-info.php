@@ -150,7 +150,6 @@ if (!$_SESSION['userid']) {
                                             <div class="form-group">
                                                 <label for="passport">Passport</label>
                                                 <input type="file" class="form-control-file" name="passport<?php echo "[$x]" ?>">
-
                                                 <div class="img invalid-feedback">
                                                     Please upload a passport
                                                 </div>
@@ -160,7 +159,7 @@ if (!$_SESSION['userid']) {
                                         <div class="col-4">
                                             <div class="form-group">
                                                 <label for="id">Valid ID</label><label for="" class="required">*</label>
-                                                <input type="file" class="form-control-file" name="valid-id<?php echo "[$x]" ?>" required>
+                                                <input type="file" class="form-control-file valid" name="valid-id<?php echo "[$x]" ?>" required>
 
                                                 <div class="img invalid-feedback">
                                                     Please upload a valid id

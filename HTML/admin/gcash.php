@@ -56,7 +56,7 @@ function random_strings($length_of_string)
     include "header-admin.php";
     include "side-bar-admin.php";
 
-    $query = "SELECT * FROM gcash";
+    $query = "SELECT * FROM gcash INNER JOIN paymentinfo ON paymentinfo.paymentinfoid = gcash.paymentinfoid INNER JOIN user ON paymentinfo.userid = user.userid";
     $res = mysqli_query($conn, $query);
     ?>
     <div class="main">
@@ -71,8 +71,11 @@ function random_strings($length_of_string)
                 ?>
                         <div class="row p-2">
                             <div class="col-12 flex">
-                                <p class="w-700"><?php echo htmlspecialchars($row['paymentinfoid'])  ?></p>
-                                <p><?php echo htmlspecialchars($row['img']) ?></p>
+                                <div>
+                                    <p class="w-700 d-inline"><?php echo htmlspecialchars($row['paymentinfoid'])  ?></p>
+                                    <p class="d-inline ml-3"><?php echo htmlspecialchars($row['firstname']) . ' ' . htmlspecialchars($row['lastname'])  ?></p>
+                                    <p class="d-inline ml-3"><?php echo htmlspecialchars($row['img']) ?></p>
+                                </div>
                                 <button class="btn btn-primary btn-sm" data-target="#<?php echo $rand ?>" data-toggle="modal">View</button>
                             </div>
                         </div>

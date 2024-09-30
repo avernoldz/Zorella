@@ -77,7 +77,7 @@ $(document).ready(function () {
 
     // Iterate over each file input
     $(form)
-      .find('input[type="file"]')
+      .find(".form-control-file.valid")
       .each(function () {
         var fileInput = $(this)[0];
         var file = fileInput.files[0];
