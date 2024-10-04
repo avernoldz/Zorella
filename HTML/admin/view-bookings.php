@@ -53,6 +53,11 @@ if (!$_SESSION['adminid']) {
     $quotationResults = mysqli_query($conn, $quotation);
     $quotationRows = mysqli_fetch_all($quotationResults, MYSQLI_ASSOC);
 
+    $multi = "SELECT ticket.ticketid, flight.* FROM ticket
+                INNER JOIN flight ON flight.ticketid = ticket.ticketid";
+    $multires = mysqli_query($conn, $multi);
+    $multirow = mysqli_fetch_array($multires);
+
     $firstRow = null;
     $total = null;
 
@@ -158,6 +163,26 @@ if (!$_SESSION['adminid']) {
                             <label>Direct</label>
                             <p><?php echo $firstRow['directflight'] ?></p>
                         </div>
+
+                        <?php if (($firstRow['tickettype'] == 'Multi-City')): ?>
+                            <div class="info-item">
+                                <label>Origin</label>
+                                <p><?php echo $multirow['origin'] ?></p>
+                            </div>
+                            <div class="info-item">
+                                <label>Destination</label>
+                                <p><?php echo $multirow['destination'] ?></p>
+                            </div>
+                            <div class="info-item">
+                                <label>Class</label>
+                                <p><?php echo $multirow['classtype'] ?></p>
+                            </div>
+                            <div class="info-item">
+                                <label>Departure</label>
+                                <p><?php echo date('M d, Y', strtotime($multirow['departure'])); ?></p>
+                            </div>
+                        <?php endif; ?>
+
                         <div class="info-item">
                             <label>Passengers</label>
                             <p><?php echo $total ?></p>

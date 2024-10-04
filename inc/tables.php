@@ -12,6 +12,21 @@
 
 	$options = ['cost' => 12,];
 
+	$flight = "CREATE TABLE flight(
+		id int(100) AUTO_INCREMENT PRIMARY KEY,
+		origin varchar(250) NOT NULL,
+		destination varchar(250) NOT NULL,
+		departure DATE NOT NULL,
+		classtype varchar(20) NOT NULL,
+		ticketid int NOT NULL
+		)";
+
+	if (mysqli_query($conn, $flight)) {
+		echo "Table flight";
+	} else {
+		echo "Error creating Table: " . mysqli_error($conn);
+	}
+
 
 	$gcash = "CREATE TABLE gcash(
 		id int(100) AUTO_INCREMENT PRIMARY KEY,

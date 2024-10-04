@@ -1,4 +1,5 @@
 <?php
+session_start();
 include '../../inc/Include.php';
 
 if (isset($_POST['adult'])) {
@@ -128,4 +129,75 @@ if (isset($_POST['adult'])) {
 
 <?php
     }
+}
+
+if (isset($_POST['old'])) {
+    $old = $_POST['old'];
+    $input = $_POST['input'];
+
+    if (password_verify($old, $input)) {
+        echo "correct";
+    } else {
+        echo "invalid.";
+    }
+}
+
+if (isset($_POST['settings'])) {
+    $options = ['cost' => 12,];
+
+    // Retrieve and escape POST data
+    $userid = $_SESSION['userid'];
+    $firstname = isset($_POST['firstname']) ? mysqli_real_escape_string($conn, $_POST['firstname']) : '';
+    $lastname = isset($_POST['lastname']) ? mysqli_real_escape_string($conn, $_POST['lastname']) : '';
+    $phonenumber = isset($_POST['phonenumber']) ? mysqli_real_escape_string($conn, $_POST['phonenumber']) : '';
+    $email = isset($_POST['email']) ? mysqli_real_escape_string($conn, $_POST['email']) : '';
+    $old_password = isset($_POST['old-password']) ? mysqli_real_escape_string($conn, $_POST['old-password']) : '';
+    $new_password = isset($_POST['new-password']) ? mysqli_real_escape_string($conn, $_POST['new-password']) : '';
+
+    if ($new_password != '') {
+        $hash_pass = password_hash("$new_password", PASSWORD_BCRYPT, $options);
+        $password = $hash_pass;
+    } else {
+        $hash_pass = password_hash("$old_password", PASSWORD_BCRYPT, $options);
+        $password = $hash_pass;
+    }
+
+
+    $stmt = $conn->prepare("UPDATE user SET firstname = ?, lastname = ?, phonenumber = ?, email = ?, password = ? WHERE userid = ?");
+    $stmt->bind_param("ssssss", $firstname, $lastname, $phonenumber, $email, $password, $userid);
+
+    // Execute the statement
+    header("Location: ../../user/dashboard.php?userid=$userid&alert=2");
+
+    $stmt->execute();
+    $stmt->close();
+}
+
+if (isset($_POST['settings-admin'])) {
+    $options = ['cost' => 12,];
+
+    // Retrieve and escape POST data
+    $adminid = $_SESSION['adminid'];
+    $name = isset($_POST['name']) ? mysqli_real_escape_string($conn, $_POST['name']) : '';
+    $email = isset($_POST['email']) ? mysqli_real_escape_string($conn, $_POST['email']) : '';
+    $old_password = isset($_POST['old-password']) ? mysqli_real_escape_string($conn, $_POST['old-password']) : '';
+    $new_password = isset($_POST['new-password']) ? mysqli_real_escape_string($conn, $_POST['new-password']) : '';
+
+    if ($new_password != '') {
+        $hash_pass = password_hash("$new_password", PASSWORD_BCRYPT, $options);
+        $password = $hash_pass;
+    } else {
+        $hash_pass = password_hash("$old_password", PASSWORD_BCRYPT, $options);
+        $password = $hash_pass;
+    }
+
+
+    $stmt = $conn->prepare("UPDATE admin SET `name` = ?, email = ?, `password` = ? WHERE adminid = ?");
+    $stmt->bind_param("ssss", $name, $email, $password, $adminid);
+
+    // Execute the statement
+    header("Location: ../../admin/dashboard-admin.php?adminid=$adminid&alert=2");
+
+    $stmt->execute();
+    $stmt->close();
 }

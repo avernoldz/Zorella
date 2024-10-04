@@ -29,11 +29,12 @@ function getEducationalResults($conn, $userid = null)
             eb.*,
             eb.pax AS eb_pax,
             eb.created_at AS date_eb,
+            pt.downpayment,
             pt.confirmation_pdf,
             pt.payment_id,
             p.paymentid,
             pt.paymentinfoid,
-            
+            g.*,
             pt.due_date
         FROM
             booking b
@@ -45,6 +46,8 @@ function getEducationalResults($conn, $userid = null)
             payment p ON p.booking_id = b.booking_id AND p.booking_type = 'Educational'
         LEFT JOIN
             paymentinfo pt ON pt.payment_id = p.paymentid
+        INNER JOIN 
+            gcash g ON g.paymentinfoid = pt.paymentinfoid
     ";
 
     if ($userid !== null) {
@@ -81,9 +84,11 @@ function getTicketResults($conn, $userid = null)
             tc.*,
             pt.confirmation_pdf,
             pt.downpayment,
+            pt.downpayment,
             pt.payment_id,
             p.paymentid,
             pt.paymentinfoid,
+            g.*,
             pt.due_date
         FROM
             booking b
@@ -95,6 +100,8 @@ function getTicketResults($conn, $userid = null)
             payment p ON p.booking_id = b.booking_id AND (p.booking_type = 'Customize' OR p.booking_type = 'Ticketed')
         LEFT JOIN
             paymentinfo pt ON pt.payment_id = p.paymentid
+        INNER JOIN 
+            gcash g ON g.paymentinfoid = pt.paymentinfoid
     ";
 
     if ($userid !== null) {
@@ -135,6 +142,7 @@ function getTourPackageResults($conn, $userid = null)
             pt.downpayment,
             pt.paymentinfoid,
             pt.due_date,
+            g.*,
             tp.title
         FROM
             booking b
@@ -148,6 +156,8 @@ function getTourPackageResults($conn, $userid = null)
             paymentinfo pt ON pt.payment_id = p.paymentid
         LEFT JOIN
             tourpackage tp ON tp.tourid = tc.tourid
+        INNER JOIN 
+            gcash g ON g.paymentinfoid = pt.paymentinfoid
     ";
 
     if ($userid !== null) {
@@ -176,7 +186,7 @@ function sendSms($to, $message)
 {
     // Your Twilio credentials
     $accountSid = 'ACac806c6af3b3fca8e4b782b9faf55960';
-    $authToken = '5c58c69d3865c6acfbda115dbb41c6bc';
+    $authToken = '98bb5254529fbec7be71451a9255391f';
     $twilioNumber = '+12548266857';
 
     // Create a new Twilio client

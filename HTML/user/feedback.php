@@ -114,10 +114,7 @@ if (!$_SESSION['userid']) {
                             <div class="form-group">
                                 <label for="feedback">Write your comments and recommendations</label>
                                 <textarea class="form-control" id="feedback" rows="6" name="feedback" required
-                                    placeholder="Aliquam facilisis sapien nec diam eleifend sagittis. Duis commodo ullamcorper sapien, sit amet ultrices nibh placerat vel. Vestibulum fringilla mollis quam, ut malesuada velit dictum id. Mauris congue tempus elit, ac pretium tellus iaculis eu. Vestibulum eget ante viverra urna scelerisque mattis. Nullam venenatis augue mauris, sit amet feugiat lorem pharetra non. Nunc efficitur commodo mattis."></textarea>
-                                <div class="invalid-feedback">
-                                    Please write your comments and recommendations
-                                </div>
+                                    placeholder="Your comments and suggestions are highly appreciated"></textarea>
                             </div>
 
                         </div>
@@ -133,7 +130,7 @@ if (!$_SESSION['userid']) {
                             <label for="star2" title="text">2 stars</label>
                             <input type="radio" id="star1" name="rate" value="1" required />
                             <label for="star1" title="text">1 star</label>
-                            <div class="invalid-feedback">
+                            <div class="invalid-feedback text-center">
                                 Please select your ratings
                             </div>
                         </div>

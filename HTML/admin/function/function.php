@@ -84,7 +84,7 @@ function getTicketedBookings($conn, $branch, $status)
 function processBooking($conn, $mail)
 {
 
-    $bookingData = escapeInputData($conn, $_POST);
+    $bookingData = escapeInputData($_POST);
     $bookingData['price_to_pay'] = !empty($bookingData['price_to_pay']) ? $bookingData['price_to_pay'] : ($bookingData['downpayment'] ?? 0);
     $bookingData['installment_number'] = !empty($bookingData['installment_number']) ? $bookingData['installment_number'] : 0;
     $bookingData['due_date'] = !empty($bookingData['due_date']) ? $bookingData['due_date'] : 'NOT APPLICABLE';
@@ -128,10 +128,10 @@ function processBooking($conn, $mail)
     }
 }
 
-function escapeInputData($conn, $data)
+function escapeInputData($data)
 {
     foreach ($data as $key => $value) {
-        $data[$key] = mysqli_real_escape_string($conn, $value);
+        $data[$key] = $value;
     }
     return $data;
 }
@@ -262,9 +262,9 @@ function generateConfirmationPDF($firstRow, $tourRows, $bookingData, $totalPasse
         $days = $interval->days . ' Days';
     }
 
-    $htmlContent = $bookingData['terms'];
-    // Convert HTML to plain text and replace line breaks
-    $textContent = trim(preg_replace('/\r\n|\r|\n/', '<br>', $htmlContent));
+    // $htmlContent = $bookingData['terms'];
+    // // Convert HTML to plain text and replace line breaks
+    // $textContent = trim(preg_replace('/\r\n|\r|\n/', '<br>', $htmlContent));
 
     $imageData = base64_encode(file_get_contents('../../../Assets/icon.png'));
     $src = 'data:image/png;base64,' . $imageData;
@@ -340,7 +340,7 @@ function generateConfirmationPDF($firstRow, $tourRows, $bookingData, $totalPasse
             </div>
             <div class="col">
                 <p style="text-align: right;">
-                    <strong style="background:#fbd3f4; padding: 2px 22px;">TOTAL AMOUNT <?php echo $date2->format('Y-m-d'); ?></strong><br>
+                    <strong style="background:#fbd3f4; padding: 2px 22px;">TOTAL AMOUNT</strong><br>
                     <label style="background:#ffb0f1; padding: 0px 21px;">PHP <?php echo number_format($bookingData['total_price'], 2) ?></label>
                 </p>
             </div>
@@ -392,7 +392,7 @@ function generateConfirmationPDF($firstRow, $tourRows, $bookingData, $totalPasse
                 </table>
             </div>
             <div class="col">
-                <?php echo $textContent ?>
+                <p style="white-space: pre-wrap;"> <?php echo $bookingData['terms'] ?></p>
             </div>
             <p style="text-align:right;">Prepared by: <strong>Janine Rabajante</strong><br>Marketing Executive</p>
             <p style="text-align:right;">Conforme: <strong>Ms. Bernadette Cagampan</strong><br>Operations Manager</p>
@@ -425,7 +425,7 @@ function sendEmail($mail, $recipientEmail, $pdfFilePath, $title, $message) // Ch
     $mail->Host       = 'smtp.gmail.com';
     $mail->SMTPAuth   = true;
     $mail->Username   = 'gremoryyxx@gmail.com'; // Your SMTP username
-    $mail->Password   = 'ioslrvtwplqqgyum'; // Your SMTP password
+    $mail->Password   = 'lxnaxcxdslvzxhqi'; // Your SMTP password
     $mail->SMTPSecure = 'ssl';
     $mail->Port       = 465;
 

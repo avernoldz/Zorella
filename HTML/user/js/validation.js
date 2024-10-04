@@ -225,6 +225,61 @@ $(document).ready(function () {
       $(".arrival-container").show(); // Show if other buttons are clicked
       $("#arrival").attr("required", "required"); // Add 'required' attribute
     }
+
+    if (value === "Multi-City") {
+      $("#add-flight").show();
+      $("#remove-flight").show();
+    } else {
+      $("#add-flight").hide();
+      $("#remove-flight").hide();
+    }
+  });
+
+  $("#add-flight").click(function () {
+    const flightFormHTML = `
+        <div class="row w-100 append-flight">
+          <div class="row mt-4 wd-100">
+              <div class="col-4">
+                  <label for="origin">Origin</label><label for="" class="required">*</label>
+                  <input class="form-control" list="datalistOptions" name="aorigin[]" placeholder="Type to search origin" required>
+                  <datalist class="origin">
+                  </datalist>
+              </div>
+              <div class="col-4">
+                  <label for="destination">Destination</label><label for="" class="required">*</label>
+                  <input class="form-control" list="datalistOptions" name="adestination[]" placeholder="Type to search destination" required>
+                  <datalist class="origin">
+                  </datalist>
+              </div>
+
+          </div>
+
+          <div class="row mt-4 wd-100">
+              <div class="col-4">
+                  <label for="departure">Departure</label><label for="" class="required">*</label>
+                  <input type="date" placeholder="Departure" name="adeparture[]"
+                      class="form-control" required>
+              </div>
+
+              <div class="col-4">
+                  <label for="classtype">Class Type</label><label for="" class="required">*</label>
+                  <select name="aclasstype[]" class="form-control">
+                      <option selected>Economy</option>
+                      <option>Premium Economy</option>
+                      <option>Business</option>
+                      <option>First Class</option>
+                  </select>
+              </div>
+          </div>
+      </div>
+    `;
+
+    // Append the new form directly to the container
+    $(".last").after(flightFormHTML);
+  });
+
+  $("#remove-flight").click(function () {
+    $(".append-flight").last().remove();
   });
 
   // Initialize visibility based on the current ticket type value

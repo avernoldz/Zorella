@@ -3,7 +3,7 @@ session_start();
 session_regenerate_id();
 
 if (!$_SESSION['adminid']) {
-    header("Location:index.php?Login-first");
+    header("Location:../index.php?Login-first");
 }
 ?>
 <!DOCTYPE html>
