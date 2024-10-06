@@ -129,7 +129,7 @@ function savePDFConfirm($body, $name, $path)
     $dompdf->render();
 
     $date = date('Ymds');
-    $pdfFilePath = '../' . $path . '/' . $name . $date . '.pdf'; // Adjust the path as needed
+    $pdfFilePath = 'C:/xampp/htdocs/Zorella/HTML/admin/' . $path . '/' . $name . $date . '.pdf'; // Adjust the path as needed
     file_put_contents($pdfFilePath, $dompdf->output());
 
     return $pdfFilePath;

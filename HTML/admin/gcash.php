@@ -58,9 +58,9 @@ function random_strings($length_of_string)
     include "side-bar-admin.php";
 
     $allResults = array_merge(
-        getEducationalResults($conn),
-        getTicketResults($conn),
-        getTourPackageResults($conn)
+        getEducationalResults($conn, null, ''),
+        getTicketResults($conn, null, ''),
+        getTourPackageResults($conn, null, '')
     );
 
     usort($allResults, function ($a, $b) {
@@ -178,6 +178,32 @@ function random_strings($length_of_string)
     <script>
         $(document).ready(function() {
 
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(window.location.search);
+            const alert = urlParams.get('alert');
+
+            if (alert == 1) {
+                toastr["success"]("Gcash Payment approved successfully")
+            }
+
+            toastr.options = {
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": true,
+                "progressBar": false,
+                "preventDuplicates": false,
+                "positionClass": "toast-top-right",
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            }
+
             $('.row.p-2').each(function(index) {
                 if (index % 2 === 0) {
                     $(this).css('background-color', '#eff5ff'); // Odd index (1st, 3rd, ...)
@@ -247,7 +273,6 @@ function random_strings($length_of_string)
                 });
                 console.log(branch);
             });
-
         });
     </script>
 </body>

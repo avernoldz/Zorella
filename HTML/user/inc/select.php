@@ -12,7 +12,7 @@ function fetchResults($result)
 }
 
 // Function to get educational results
-function getEducationalResults($conn, $userid = null)
+function getEducationalResults($conn, $userid = null, $gcash = null)
 {
     $educationalQuery = "
         SELECT
@@ -34,8 +34,15 @@ function getEducationalResults($conn, $userid = null)
             pt.payment_id,
             p.paymentid,
             pt.paymentinfoid,
-            g.*,
             pt.due_date
+    ";
+
+    // Include gcash fields conditionally
+    if ($gcash !== null) {
+        $educationalQuery .= ", g.*";
+    }
+
+    $educationalQuery .= "
         FROM
             booking b
         INNER JOIN
@@ -46,9 +53,14 @@ function getEducationalResults($conn, $userid = null)
             payment p ON p.booking_id = b.booking_id AND p.booking_type = 'Educational'
         LEFT JOIN
             paymentinfo pt ON pt.payment_id = p.paymentid
-        INNER JOIN 
-            gcash g ON g.paymentinfoid = pt.paymentinfoid
     ";
+
+    if ($gcash !== null) {
+        $educationalQuery .= "
+            INNER JOIN 
+                gcash g ON g.paymentinfoid = pt.paymentinfoid
+        ";
+    }
 
     if ($userid !== null) {
         $educationalQuery .= " WHERE u.userid = ?";
@@ -66,8 +78,9 @@ function getEducationalResults($conn, $userid = null)
     return fetchResults($stmt->get_result());
 }
 
+
 // Function to get ticket results
-function getTicketResults($conn, $userid = null)
+function getTicketResults($conn, $userid = null, $gcash = null)
 {
     $ticketQuery = "
         SELECT
@@ -84,12 +97,18 @@ function getTicketResults($conn, $userid = null)
             tc.*,
             pt.confirmation_pdf,
             pt.downpayment,
-            pt.downpayment,
             pt.payment_id,
             p.paymentid,
             pt.paymentinfoid,
-            g.*,
             pt.due_date
+    ";
+
+    // Conditionally include g.* if gcash is not null
+    if ($gcash !== null) {
+        $ticketQuery .= ", g.*"; // Add this line
+    }
+
+    $ticketQuery .= "
         FROM
             booking b
         INNER JOIN
@@ -100,9 +119,15 @@ function getTicketResults($conn, $userid = null)
             payment p ON p.booking_id = b.booking_id AND (p.booking_type = 'Customize' OR p.booking_type = 'Ticketed')
         LEFT JOIN
             paymentinfo pt ON pt.payment_id = p.paymentid
-        INNER JOIN 
-            gcash g ON g.paymentinfoid = pt.paymentinfoid
     ";
+
+    // Conditionally include the INNER JOIN for gcash
+    if ($gcash !== null) {
+        $ticketQuery .= "
+            INNER JOIN 
+                gcash g ON g.paymentinfoid = pt.paymentinfoid
+        ";
+    }
 
     if ($userid !== null) {
         $ticketQuery .= " WHERE u.userid = ?";
@@ -120,8 +145,9 @@ function getTicketResults($conn, $userid = null)
     return fetchResults($stmt->get_result());
 }
 
+
 // Function to get tour package results
-function getTourPackageResults($conn, $userid = null)
+function getTourPackageResults($conn, $userid = null, $gcash = null)
 {
     $tourPackageQuery = "
         SELECT
@@ -141,9 +167,15 @@ function getTourPackageResults($conn, $userid = null)
             p.paymentid,
             pt.downpayment,
             pt.paymentinfoid,
-            pt.due_date,
-            g.*,
-            tp.title
+            pt.due_date
+    ";
+
+    // Conditionally include g.* if gcash is not null
+    if ($gcash !== null) {
+        $tourPackageQuery .= ", g.*"; // Add this line
+    }
+
+    $tourPackageQuery .= "
         FROM
             booking b
         INNER JOIN
@@ -156,9 +188,15 @@ function getTourPackageResults($conn, $userid = null)
             paymentinfo pt ON pt.payment_id = p.paymentid
         LEFT JOIN
             tourpackage tp ON tp.tourid = tc.tourid
-        INNER JOIN 
-            gcash g ON g.paymentinfoid = pt.paymentinfoid
     ";
+
+    // Conditionally include the INNER JOIN for gcash
+    if ($gcash !== null) {
+        $tourPackageQuery .= "
+            INNER JOIN 
+                gcash g ON g.paymentinfoid = pt.paymentinfoid
+        ";
+    }
 
     if ($userid !== null) {
         $tourPackageQuery .= " WHERE u.userid = ?";
@@ -175,10 +213,6 @@ function getTourPackageResults($conn, $userid = null)
     $stmt->execute();
     return fetchResults($stmt->get_result());
 }
-
-// Merge results
-
-// Close the connection
 
 // Now $allResults contains combined results from all queries
 

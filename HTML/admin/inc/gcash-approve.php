@@ -195,10 +195,8 @@ function processBookingPayment($conn, $userid, $payment_id, $bookid, $query, $ma
     $confirmation_pdf = basename($pdfFilePath);
 
     sendEmail($mail, $email, $pdfFilePath, $tour, 'Acknowledgement Receipt ');
-
-
     $_SESSION['paid'] = 'Your booking was successfully paid. Thank you!';
     // Redirect to Stripe Checkout
-    header("Location: ../gcash.php?adminid=$userid");
+    header("Location: ../gcash.php?adminid=$userid&alert=1");
     exit();
 }
