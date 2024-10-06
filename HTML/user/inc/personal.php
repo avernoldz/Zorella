@@ -15,6 +15,11 @@ if (!file_exists($target_dir)) {
 // Function to upload files
 function uploadFile($file, $target_dir, $userid, $ticketid)
 {
+
+    if ($file['error'] === UPLOAD_ERR_NO_FILE) {
+        return null;
+    }
+
     $uploadOk = 1;
     $target_file = $target_dir . basename($file["name"]);
     $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
@@ -104,16 +109,16 @@ if (isset($_POST['personal'])) {
         $valid_id = $valid_ids['tmp_name'][$i];
 
         // Make sure each file input is handled correctly
-        if (isset($passport)) {
+        if (isset($passports['error'][$i]) && $passports['error'][$i] === UPLOAD_ERR_NO_FILE) {
+            $passportFilename = null; // No file uploaded
+        } else {
             $passportFilename = uploadFile([
-                'tmp_name' => $passport,
+                'tmp_name' => $passports['tmp_name'][$i],
                 'name' => $passports['name'][$i],
                 'type' => $passports['type'][$i],
                 'size' => $passports['size'][$i],
                 'error' => $passports['error'][$i],
             ], $target_dir, $userid, $ticketid);
-        } else {
-            $passportFilename = null; // Handle case where no file was uploaded
         }
 
         if (isset($valid_id)) {

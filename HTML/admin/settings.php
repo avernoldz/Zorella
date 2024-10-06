@@ -1,10 +1,10 @@
 <!-- Modal -->
 <div class="modal" id="settings" tabindex="-1" role="dialog" aria-labelledby="settingsTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header" style="align-items: baseline;">
                 <h4 class="modal-title" id="settingsTitle" class="w-700">
-                    <?php echo "$rows[firstname] $rows[lastname]" ?>
+                    <?php echo "$rows[name]" ?>
                 </h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -13,21 +13,15 @@
             <div class="modal-body">
                 <form action="../AJAX//total-passenger.php" method="POST" class="settings">
                     <div class="row">
-                        <div class="col-6">
+                        <div class="col-12">
                             <div class="form-group">
-                                <label for="firstname" class="w-500">Firstname</label>
-                                <input name="firstname" type="text" class="form-control" id="firstname" aria-describedby="emailHelp"
-                                    value="<?php echo htmlspecialchars($rows['firstname'], ENT_QUOTES, 'UTF-8') ?>">
+                                <label for="name" class="w-500">Name</label>
+                                <input name="name" type="text" class="form-control" id="name" aria-describedby="emailHelp"
+                                    value="<?php echo htmlspecialchars($rows['name'], ENT_QUOTES, 'UTF-8') ?>">
                             </div>
                         </div>
-                        <div class="col-6">
-                            <div class="form-group">
-                                <label for="lastname" class="w-500">Lastname</label>
-                                <input name="lastname" type="text" class="form-control" id="lastname" aria-describedby="emailHelp"
-                                    value="<?php echo "$rows[lastname]" ?>">
-                            </div>
-                        </div>
-                        <div class="col-6">
+
+                        <div class="col-12">
                             <div class="form-group">
                                 <label for="email" class="w-500">Email Address</label>
                                 <input name="email" type="email" class="form-control" id="email" aria-describedby="emailHelp"
@@ -35,15 +29,7 @@
                             </div>
                         </div>
 
-                        <div class="col-6">
-                            <div class="form-group">
-                                <label for="phonenumber" class="w-500">Phonenumber</label>
-                                <input name="phonenumber" type="text" class="form-control" id="phonenumber" aria-describedby="emailHelp"
-                                    value="<?php echo "$rows[phonenumber]" ?>">
-                            </div>
-                        </div>
-
-                        <div class="col-6">
+                        <div class="col-12">
                             <div class="form-group">
                                 <label for="old-password" class="w-500">Old Password</label>
                                 <input name="old-password" type="password" class="form-control" id="old-password"
@@ -52,14 +38,15 @@
                             </div>
                         </div>
                         <div class="w-100"></div>
-                        <div class="col-6">
+
+                        <div class="col-12">
                             <div class="form-group">
                                 <label for="new-password" class="w-500">New Password</label>
                                 <input name="new-password" type="password" class="form-control" id="new-password"
                                     aria-describedby="emailHelp">
                             </div>
                         </div>
-                        <div class="col-6">
+                        <div class="col-12">
                             <div class="form-group">
                                 <label for="confirm-password" class="w-500">Confirm Password</label>
                                 <input type="password" class="form-control" id="confirm-password"
@@ -72,7 +59,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <input type="submit" id="aDdn" name="settings" class="btn btn-primary" value="Save changes">
+                <input type="submit" id="aDdn" name="settings-admin" class="btn btn-primary" value="Save changes">
             </div>
             </form>
         </div>
@@ -94,7 +81,7 @@
                 $('#aDdn').attr('disabled', false);
             }
 
-            console.log(pass, cpass, settings);
+            // console.log(pass, cpass, settings);
         });
 
         $('#old-password').keyup(function() {
@@ -109,8 +96,8 @@
                     input: input,
                 },
                 success: function(response) {
-                    console.log(old);
-                    console.log(response);
+                    // console.log(old);
+                    // console.log(response);
                     if (response == 'correct') {
                         $('.opass').text('Old password is correct.').removeClass('text-danger').addClass('text-success').show();
                     } else {
@@ -121,6 +108,8 @@
                     console.log('ERR');
                     $('.opass').text('An error occurred. Please try again.').addClass('text-danger').show();
                 }
+            }).done(function() {
+                $(".overlay").fadeOut(300);
             });
         })
     </script>

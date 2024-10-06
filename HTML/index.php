@@ -429,7 +429,7 @@ if (isset($_GET['Logout'])) {
                                 aria-describedby="emailHelp" placeholder="&#xf023; Password"
                                 style="font-family:Arial, FontAwesome" required>
                             <div class="div w-100 text-right mt-1">
-                                <input type="checkbox" name="show" id="showPassword" class="text-right">
+                                <input type="checkbox" name="show" id="showPassword" class="text-right showPassword">
                                 <small class="text-right" class="mr-3">Show Password</small>
                             </div>
                         </div>
@@ -497,7 +497,7 @@ if (isset($_GET['Logout'])) {
                                 aria-describedby="emailHelp" placeholder="&#xf023; Password"
                                 style="font-family:Arial, FontAwesome" required>
                             <div class="div w-100 text-right mt-1">
-                                <input type="checkbox" name="show" id="showPassword" class="text-right">
+                                <input type="checkbox" name="show" id="showPassword" class="text-right showPassword">
                                 <small class="text-right" class="mr-3">Show Password</small>
                             </div>
                         </div>
@@ -612,7 +612,7 @@ if (isset($_GET['Logout'])) {
         });
     }
 
-    $('#showPassword').change(function() {
+    $('.showPassword').change(function() {
         var form = $(this).closest('form');
         var passwordInput = form.find('input[type="password"], input[type="text"]'); // Select both types
 

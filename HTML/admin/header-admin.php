@@ -28,7 +28,7 @@ $rows = mysqli_fetch_array($res);
                             <?php echo "$rows[name]" ?>
                         </h2>
                         <hr>
-                        <a class="dropdown-item" href="#"><i class="fa-solid fa-gear fa-fw mr-3"></i> Settings</a>
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#settings"><i class="fa-solid fa-gear fa-fw mr-3"></i> Settings</a>
                         <a href="../index.php?Logout" class="dropdown-item">
                             <i class="fa-solid fa-right-from-bracket fa-fw mr-3"></i> <span> Logout</span>
                         </a>
@@ -38,3 +38,5 @@ $rows = mysqli_fetch_array($res);
         </div>
     </div>
 </div>
+
+<?php include "settings.php"; ?>

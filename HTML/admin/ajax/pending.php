@@ -1,40 +1,13 @@
 <?php
 include '../../../inc/Include.php';
+include '../function/function.php';
 
 if (isset($_POST["branch"])) {
     $branch = $_POST["branch"];
     $adminid = $_POST["adminid"];
 
-    $pending = "SELECT
-    u.userid,
-    u.firstname,
-    u.lastname,
-    b.bookid,
-    b.booking_id,
-    b.booking_type,
-    b.status,
-    b.created_at,
-    tb.*,
-    eb.sdate,
-    eb.pax,
-    eb.hotel,
-    tc.*
-    FROM
-        booking b
-    INNER JOIN
-        user u ON b.userid = u.userid
-    LEFT JOIN
-        educational eb ON b.booking_type = 'Educational' AND b.booking_id = eb.educationalid
-    LEFT JOIN
-        tourbooking tc ON b.booking_type = 'Tour Package' AND b.booking_id = tc.tour_bookid
-    LEFT JOIN
-        ticket tb ON b.booking_id = tb.ticketid
-        AND (b.booking_type = 'Ticketed' OR
-            b.booking_type = 'Customize')
-    WHERE
-        b.status = 'Pending' AND b.branch = '$branch' ORDER BY b.bookid DESC";
-
-    $res = mysqli_query($conn, $pending);
+    $status = 'Pending';
+    $res = getBookings($conn, $branch, $status);
 
     if (mysqli_num_rows($res) > 0) {
         while ($row = mysqli_fetch_array($res)) {
@@ -75,7 +48,7 @@ if (isset($_POST["branch"])) {
 
                         </div>
                         <div class="col-8">
-                            <p><?php echo htmlspecialchars($row['hotel']); ?> <?php echo htmlspecialchars($row['pax']); ?> pax, <?php echo htmlspecialchars($dateFormat1); ?></p>
+                            <p><?php echo htmlspecialchars($row['hotel']); ?> <?php echo htmlspecialchars($row['ebpax']); ?> pax, <?php echo htmlspecialchars($dateFormat1); ?></p>
                         </div>
                         <div class="col-1">
                             <p class="w-700"><?php echo "$dateFormat2" ?></p>

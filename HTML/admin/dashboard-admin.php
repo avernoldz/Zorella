@@ -76,6 +76,15 @@ if (!$_SESSION['adminid']) {
 
     $res = getBookings($conn, $branch, $status);
 
+    $query = "SELECT user.firstname, user.lastname, user.email, payment.*, paymentinfo.*, booking.*, h.amount AS tamount, h.paid_date AS date_paid
+                FROM paymentinfo
+                INNER JOIN payment ON paymentinfo.payment_id = payment.paymentid
+                INNER JOIN booking ON booking.booking_id = payment.booking_id AND booking.booking_type = payment.booking_type
+                INNER JOIN user ON user.userid = paymentinfo.userid
+                INNER JOIN installmenthistory h ON paymentinfo.paymentinfoid = h.paymentinfoid
+                WHERE booking.branch = 'Calumpang'";
+    $resPay = mysqli_query($conn, $query);
+
     ?>
 
     <div class="overlay">
@@ -164,6 +173,8 @@ if (!$_SESSION['adminid']) {
                     } else {
                         echo "<div class='text-center col'> No booking available</div>";
                     } ?>
+
+
                 </div>
             </div>
             <div class="col-6 case ml-4">
@@ -257,6 +268,37 @@ if (!$_SESSION['adminid']) {
             <div class="col case ml-4 rv">
                 <h1><i class="fa-solid fa-clipboard fa-fw"></i>&nbsp;&nbsp;Payments</h1>
                 <hr>
+                <div class="row frame-quote payment w-100">
+                    <?php
+                    if (mysqli_num_rows($resPay) > 0) {
+                        while ($rows = mysqli_fetch_array($resPay)) {
+                            $date = date_create("$rows[date_paid]");
+                            $dateFormat = date_format($date, "M d, Y");
+                    ?>
+
+                            <a href="full-payment.php?adminid=<?php echo "$adminid" ?>"
+                                class="populate-quote w-100">
+                                <div class="row populate-quote">
+                                    <div class="col-6">
+                                        <label for="" class="w-700">
+                                            <?php echo "$rows[firstname] $rows[lastname]" ?><br>
+                                        </label>
+                                    </div>
+                                    <div class="col-4">
+                                        <p><?php echo "PHP " . number_format($rows['tamount'], 2) ?></p>
+                                    </div>
+                                    <div class="col-2">
+                                        <p class="w-700"><?php echo "$dateFormat" ?></p>
+                                    </div>
+                                </div>
+                            </a>
+                    <?php
+                        }
+                    } else {
+                        echo "<div class='text-center col'> No quotation available</div>";
+                    } ?>
+                </div>
+
             </div>
         </div>
     </div>
@@ -267,6 +309,7 @@ if (!$_SESSION['adminid']) {
 
             var urlA = "ajax/quotation.php";
             var urlB = "ajax/pending.php";
+            var urlC = "ajax/payment.php";
             var urlCounts = "ajax/fetch-counts.php";
 
             $(document).ajaxSend(function() {
@@ -326,7 +369,22 @@ if (!$_SESSION['adminid']) {
                                 alert("Error fetching counts");
                             }
                         }).done(function() {
-                            $(".overlay").fadeOut(300);
+                            $.ajax({
+                                type: 'POST',
+                                url: urlC,
+                                data: {
+                                    branch: branch,
+                                    adminid: adminid
+                                },
+                                success: function(data) {
+                                    $('.row.frame-quote.payment').html(data); // Update the HTML for quotations
+                                },
+                                error: function(e) {
+                                    alert("Error in fetching payment data");
+                                }
+                            }).done(function() {
+                                $(".overlay").fadeOut(300);
+                            });
                         });
                     });
                 });

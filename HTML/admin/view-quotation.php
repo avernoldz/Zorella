@@ -183,7 +183,59 @@ if (!$_SESSION['adminid']) {
     </div>
     <script src="js/app.js"></script>
     <script>
+        tinymce.init({
+            selector: '#itinerary-textarea', // Attach TinyMCE to the textarea with id 'itinerary'
+            plugins: [
+                // Core editing features
+                'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
+                // Your account includes a free trial of TinyMCE premium features
+                // Try the most popular premium features until Oct 2, 2024:
+                'checklist', 'mediaembed', 'casechange', 'export', 'formatpainter', 'pageembed', 'a11ychecker', 'tinymcespellchecker', 'permanentpen', 'powerpaste', 'advtable', 'advcode', 'editimage', 'advtemplate', 'ai', 'mentions', 'tinycomments', 'tableofcontents', 'footnotes', 'mergetags', 'autocorrect', 'typography', 'inlinecss', 'markdown',
+            ],
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+            tinycomments_mode: 'embedded',
+            tinycomments_author: 'Author name',
+            mergetags_list: [{
+                    value: 'First.Name',
+                    title: 'First Name'
+                },
+                {
+                    value: 'Email',
+                    title: 'Email'
+                },
+            ],
+            ai_request: (request, respondWith) => respondWith.string(() => Promise.reject('See docs to implement AI Assistant')),
+            height: 500, // Set height for the editor
+            image_title: true,
+            automatic_uploads: true,
+            file_picker_types: 'image',
+            images_upload_url: 'postAcceptor.php', // Handle image uploads
+            branding: false // Remove "Powered by TinyMCE" branding
+        });
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(window.location.search);
+        const alert = urlParams.get('alert');
 
+        if (alert == 4) {
+            toastr["success"]("Request for booking rejected successfully")
+        }
+        toastr.options = {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": true,
+            "progressBar": false,
+            "preventDuplicates": false,
+            "positionClass": "toast-bottom-center",
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        }
     </script>
 </body>
 

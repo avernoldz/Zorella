@@ -18,6 +18,12 @@ if (isset($_POST['ticket'])) {
     $airline = isset($_POST['airline']) ? mysqli_real_escape_string($conn, $_POST['airline']) : '';
     $source = isset($_POST['source']) ? mysqli_real_escape_string($conn, $_POST['source']) : '';
     $tickettype = isset($_POST['tickettype']) ? mysqli_real_escape_string($conn, $_POST['tickettype']) : '';
+
+    $aorigin = isset($_POST['aorigin']) ? $_POST['aorigin'] : [];
+    $adestination = isset($_POST['adestination']) ? $_POST['adestination'] : [];
+    $adeparture = isset($_POST['adeparture']) ? $_POST['adeparture'] : [];
+    $aclasstype = isset($_POST['aclasstype']) ? $_POST['aclasstype'] : [];
+
     $userid = isset($_POST['userid']) ? mysqli_real_escape_string($conn, $_POST['userid']) : '';
     $status = "Pending";
 
@@ -40,6 +46,22 @@ if (isset($_POST['ticket'])) {
     } else {
         echo mysqli_error($conn);
     }
+
+    $stmt = $conn->prepare("INSERT INTO flight (origin, destination, departure, classtype, ticketid) VALUES (?, ?, ?, ?, ?)");
+
+    foreach ($aorigin as $index => $origin) {
+        // Make sure to get corresponding values from other arrays
+        $destination = $adestination[$index];
+        $departure = $adeparture[$index];
+        $classtype = $aclasstype[$index];
+
+        // Bind parameters
+        $stmt->bind_param("sssss", $origin, $destination, $departure, $classtype, $lastInsertedId);
+
+        // Execute the statement
+        $stmt->execute();
+    }
+
 
     $insert3 = "INSERT INTO `booking` (`booking_type`, `booking_id`, `status`, `branch`, `userid` ) 
     VALUES ('$source','$lastInsertedId', '$status', '$branch', '$userid')";

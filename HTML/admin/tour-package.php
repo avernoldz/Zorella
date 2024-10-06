@@ -276,6 +276,10 @@ if (!$_SESSION['adminid']) {
     <script>
         $(document).ready(function() {
 
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(window.location.search);
+            const alert = urlParams.get('alert');
+
             if (alert == 1) {
                 toastr["success"]("Tour package added successfully")
             }

@@ -12,7 +12,7 @@ function fetchResults($result)
 }
 
 // Function to get educational results
-function getEducationalResults($conn, $userid = null)
+function getEducationalResults($conn, $userid = null, $gcash = null)
 {
     $educationalQuery = "
         SELECT
@@ -29,12 +29,20 @@ function getEducationalResults($conn, $userid = null)
             eb.*,
             eb.pax AS eb_pax,
             eb.created_at AS date_eb,
+            pt.downpayment,
             pt.confirmation_pdf,
             pt.payment_id,
             p.paymentid,
             pt.paymentinfoid,
-            
             pt.due_date
+    ";
+
+    // Include gcash fields conditionally
+    if ($gcash !== null) {
+        $educationalQuery .= ", g.*";
+    }
+
+    $educationalQuery .= "
         FROM
             booking b
         INNER JOIN
@@ -46,6 +54,13 @@ function getEducationalResults($conn, $userid = null)
         LEFT JOIN
             paymentinfo pt ON pt.payment_id = p.paymentid
     ";
+
+    if ($gcash !== null) {
+        $educationalQuery .= "
+            INNER JOIN 
+                gcash g ON g.paymentinfoid = pt.paymentinfoid
+        ";
+    }
 
     if ($userid !== null) {
         $educationalQuery .= " WHERE u.userid = ?";
@@ -63,8 +78,9 @@ function getEducationalResults($conn, $userid = null)
     return fetchResults($stmt->get_result());
 }
 
+
 // Function to get ticket results
-function getTicketResults($conn, $userid = null)
+function getTicketResults($conn, $userid = null, $gcash = null)
 {
     $ticketQuery = "
         SELECT
@@ -85,6 +101,14 @@ function getTicketResults($conn, $userid = null)
             p.paymentid,
             pt.paymentinfoid,
             pt.due_date
+    ";
+
+    // Conditionally include g.* if gcash is not null
+    if ($gcash !== null) {
+        $ticketQuery .= ", g.*"; // Add this line
+    }
+
+    $ticketQuery .= "
         FROM
             booking b
         INNER JOIN
@@ -96,6 +120,14 @@ function getTicketResults($conn, $userid = null)
         LEFT JOIN
             paymentinfo pt ON pt.payment_id = p.paymentid
     ";
+
+    // Conditionally include the INNER JOIN for gcash
+    if ($gcash !== null) {
+        $ticketQuery .= "
+            INNER JOIN 
+                gcash g ON g.paymentinfoid = pt.paymentinfoid
+        ";
+    }
 
     if ($userid !== null) {
         $ticketQuery .= " WHERE u.userid = ?";
@@ -113,8 +145,9 @@ function getTicketResults($conn, $userid = null)
     return fetchResults($stmt->get_result());
 }
 
+
 // Function to get tour package results
-function getTourPackageResults($conn, $userid = null)
+function getTourPackageResults($conn, $userid = null, $gcash = null)
 {
     $tourPackageQuery = "
         SELECT
@@ -134,8 +167,15 @@ function getTourPackageResults($conn, $userid = null)
             p.paymentid,
             pt.downpayment,
             pt.paymentinfoid,
-            pt.due_date,
-            tp.title
+            pt.due_date
+    ";
+
+    // Conditionally include g.* if gcash is not null
+    if ($gcash !== null) {
+        $tourPackageQuery .= ", g.*"; // Add this line
+    }
+
+    $tourPackageQuery .= "
         FROM
             booking b
         INNER JOIN
@@ -149,6 +189,14 @@ function getTourPackageResults($conn, $userid = null)
         LEFT JOIN
             tourpackage tp ON tp.tourid = tc.tourid
     ";
+
+    // Conditionally include the INNER JOIN for gcash
+    if ($gcash !== null) {
+        $tourPackageQuery .= "
+            INNER JOIN 
+                gcash g ON g.paymentinfoid = pt.paymentinfoid
+        ";
+    }
 
     if ($userid !== null) {
         $tourPackageQuery .= " WHERE u.userid = ?";
@@ -166,17 +214,13 @@ function getTourPackageResults($conn, $userid = null)
     return fetchResults($stmt->get_result());
 }
 
-// Merge results
-
-// Close the connection
-
 // Now $allResults contains combined results from all queries
 
 function sendSms($to, $message)
 {
     // Your Twilio credentials
     $accountSid = 'ACac806c6af3b3fca8e4b782b9faf55960';
-    $authToken = '5c58c69d3865c6acfbda115dbb41c6bc';
+    $authToken = '98bb5254529fbec7be71451a9255391f';
     $twilioNumber = '+12548266857';
 
     // Create a new Twilio client

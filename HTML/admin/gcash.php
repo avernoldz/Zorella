@@ -53,10 +53,26 @@ function random_strings($length_of_string)
     $active = "Gcash";
     $on = "active-pay";
     include "../../inc/Include.php";
+    include "../user/inc/select.php";
     include "header-admin.php";
     include "side-bar-admin.php";
 
-    $query = "SELECT * FROM gcash INNER JOIN paymentinfo ON paymentinfo.paymentinfoid = gcash.paymentinfoid INNER JOIN user ON paymentinfo.userid = user.userid";
+    $allResults = array_merge(
+        getEducationalResults($conn, null, ''),
+        getTicketResults($conn, null, ''),
+        getTourPackageResults($conn, null, '')
+    );
+
+    usort($allResults, function ($a, $b) {
+        return $b['id'] <=> $a['id'];
+    });
+
+    $query = "SELECT DISTINCT gcash.id, gcash.*, paymentinfo.paymentinfoid, user.userid, booking.bookid, booking.booking_type, booking.booking_id FROM gcash 
+                INNER JOIN paymentinfo ON paymentinfo.paymentinfoid = gcash.paymentinfoid 
+                INNER JOIN user ON paymentinfo.userid = user.userid 
+                INNER JOIN payment ON payment.paymentid = paymentinfo.payment_id
+                INNER JOIN booking ON booking.userid = user.userid
+                ORDER BY gcash.id DESC";
     $res = mysqli_query($conn, $query);
     ?>
     <div class="main">
@@ -65,9 +81,10 @@ function random_strings($length_of_string)
                 <h1><i class="fa-solid fa-box-archive fa-fw"></i>&nbsp;&nbsp;Gcash</h1>
                 <hr>
                 <?php
-                if (mysqli_num_rows($res) > 0) {
-                    while ($row = mysqli_fetch_array($res)) {
+                if (!empty($allResults)) {
+                    foreach ($allResults as $row) {
                         $rand = random_strings(4);
+                        $rand2 = random_strings(5);
                 ?>
                         <div class="row p-2">
                             <div class="col-12 flex">
@@ -76,9 +93,49 @@ function random_strings($length_of_string)
                                     <p class="d-inline ml-3"><?php echo htmlspecialchars($row['firstname']) . ' ' . htmlspecialchars($row['lastname'])  ?></p>
                                     <p class="d-inline ml-3"><?php echo htmlspecialchars($row['img']) ?></p>
                                 </div>
-                                <button class="btn btn-primary btn-sm" data-target="#<?php echo $rand ?>" data-toggle="modal">View</button>
+                                <div>
+                                    <button class="btn btn-primary btn-sm" data-target="#<?php echo $rand2 ?>" data-toggle="modal">Approve</button>
+                                    <button class="btn btn-primary btn-sm" data-target="#<?php echo $rand ?>" data-toggle="modal">View</button>
+                                </div>
                             </div>
                         </div>
+
+                        <div class="modal fade" style="font-size: 14px;" id="<?php echo $rand2 ?>" tabindex="-1" role="dialog" aria-labelledby="acceptLabel"
+                            aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+
+                                <form action="inc/gcash-approve.php" style="width: 100%;" class="needs-validation" method="GET" novalidate>
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" style="font-size: 16px; font-weight:bold;">Approve</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="row w-100">
+                                                <div class="col-12">
+                                                    <label for="">Amount Paid</label>
+                                                    <input type="number" class="form-control" placeholder="10000" name="amount" required>
+                                                </div>
+                                            </div>
+                                            <input type="hidden" name="payment_id" value="<?php echo $row['paymentinfoid'] ?>">
+                                            <input type="hidden" name="userid" value="<?php echo $row['userid'] ?>">
+                                            <input type="hidden" name="bookid" value="<?php echo $row['bookid'] ?>">
+                                            <input type="hidden" name="booking_type" value="<?php echo $row['booking_type'] ?>">
+                                            <input type="hidden" name="booking_id" value="<?php echo $row['booking_id'] ?>">
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-dismiss="modal" style="font-size:14px;">Close</button>
+                                            <button style="display:none" type="submit" name="update" id="submit" style="font-size:14px;">Next</button>
+                                            <button type="button" id="next" class="btn btn-primary" style="font-size:14px;">Approve</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
 
                         <div class="modal fade" style="font-size: 14px;" id="<?php echo $rand ?>" tabindex="-1" role="dialog" aria-labelledby="acceptLabel"
                             aria-hidden="true">
@@ -95,6 +152,7 @@ function random_strings($length_of_string)
                                             <img src="<?php echo "gcash/" . htmlspecialchars($row['img']) ?>" alt="Image" style="max-width: 100%;text-align:center;">
                                         </div>
                                     </div>
+
                                 </div>
                             </div>
                         </div>
@@ -119,6 +177,32 @@ function random_strings($length_of_string)
     <script src="../user/js/validation.js"></script>
     <script>
         $(document).ready(function() {
+
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(window.location.search);
+            const alert = urlParams.get('alert');
+
+            if (alert == 1) {
+                toastr["success"]("Gcash Payment approved successfully")
+            }
+
+            toastr.options = {
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": true,
+                "progressBar": false,
+                "preventDuplicates": false,
+                "positionClass": "toast-top-right",
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            }
 
             $('.row.p-2').each(function(index) {
                 if (index % 2 === 0) {
@@ -189,7 +273,6 @@ function random_strings($length_of_string)
                 });
                 console.log(branch);
             });
-
         });
     </script>
 </body>

@@ -233,99 +233,51 @@ if (!$_SESSION['userid']) {
                     </div>
 
                     <div class="row body">
-                        <div class="col-12" style="display:flex; justify-content: center;text-align:center;">
-                            <label>Terms and Conditions</label>
-                        </div>
+                        <div class="col-12 px-5 py-3 text-justify">
+                            <p class="w-700">Terms and Conditions</p>
+                            <p>It is crucial that you comprehend your legal responsibilities and rights about the
+                                Platform before making any bookings or buying Tickets on the Platform. Because they
+                                regulate how you use the Platform and its features and content, we so urge you to carefully
+                                read these Terms and Conditions. Your use of the Platform is contingent upon your unrestricted
+                                and complete acceptance of these Terms and Conditions.</p>
+                            <br>
+                            <p class="w-700">Updates to these Terms and Conditions</p>
+                            <p>As of the date indicated in the Terms and Conditions header, all revisions to these terms and conditions will be legally binding. When you use the Platform after the revised terms and conditions are published, you agree to be bound by the revised terms and conditions.
+                                These Terms & Conditions are subject to change at any moment, in our sole discretion. The most current version of these terms and conditions, along with the date of the most recent update, will be posted on the platform.
+                            </p>
+                            <br>
 
-                        <div class="col-12">
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce vitae sagittis mi.
-                                Maecenas venenatis quam porttitor ultricies bibendum. Nam condimentum nisi eget mi
-                                facilisis, a viverra elit sodales. Integer lobortis venenatis nunc, id fermentum nulla
-                                vulputate nec. Pellentesque sapien metus, luctus eu rutrum id, lacinia at neque. Sed
-                                malesuada purus nec ligula mattis, in tristique nunc pulvinar. Donec vestibulum elit sit
-                                amet cursus tincidunt. Maecenas molestie ex sit amet neque semper scelerisque.</p>
-                            <p>Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos
-                                himenaeos. Mauris sed consectetur nunc, et sodales orci. Praesent ultrices ex in ex
-                                malesuada tempus. Integer a sodales nisi. Nulla et mi et dolor sodales vehicula ac vitae
-                                magna. Praesent eget efficitur magna. Quisque efficitur est arcu, in blandit velit
-                                lobortis at. Nulla id tempor lacus. Sed semper dui est, quis sagittis lorem consequat
-                                gravida. Cras efficitur, est blandit imperdiet euismod, arcu lectus congue odio, eu
-                                tincidunt tortor nisl a massa. Praesent sapien diam, congue vitae massa vel, interdum
-                                rhoncus elit. Nulla massa purus, tristique quis luctus in, maximus sit amet justo.
-                                Pellentesque ultrices mattis erat, quis eleifend nibh sollicitudin varius.</p>
-                            <p>Sed turpis elit, ornare vitae sapien sit amet, tempus gravida ipsum. Vestibulum ante
-                                ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Etiam lobortis
-                                risus dui, nec gravida tortor mattis eget. Proin dignissim eros ac sem posuere, in
-                                rhoncus augue dignissim. Maecenas convallis eros in nulla tempor cursus. Ut nec erat
-                                risus. Praesent ut tristique ex. Ut commodo at purus at volutpat. Morbi egestas viverra
-                                massa, elementum porta tortor congue vel. Cras tristique magna non magna pulvinar
-                                lobortis sed quis nulla. Cras purus eros, mattis non scelerisque vel, sollicitudin vitae
-                                enim. Maecenas quis magna id est varius euismod vitae ac dui. In in lobortis elit. Fusce
-                                varius lorem sem, eget placerat dui commodo in. Etiam eu magna libero. Ut et ligula non
-                                erat posuere porttitor eget eget elit.</p>
-                            <p>Aliquam scelerisque sapien sed dui tempus laoreet. Duis aliquam mollis nulla, id
-                                dignissim eros efficitur ac. Quisque malesuada mi non diam maximus malesuada.
-                                Suspendisse laoreet nibh a sem rhoncus, quis hendrerit quam condimentum. Etiam finibus,
-                                risus nec rhoncus aliquet, mi purus sollicitudin leo, ullamcorper eleifend augue est
-                                quis erat. Vestibulum eu magna massa. Sed fringilla tortor ornare velit interdum, at
-                                tristique lacus egestas. Pellentesque aliquet, tellus a sagittis venenatis, enim sem
-                                sollicitudin nulla, ut lacinia diam nulla fringilla massa. Sed sed accumsan ex. Nam
-                                vitae justo vestibulum, vehicula purus vel, accumsan nunc. Vestibulum maximus dapibus mi
-                                vel pellentesque. Donec eget magna aliquam, iaculis justo nec, gravida metus. Aenean ac
-                                lobortis tortor.</p>
-                            <p>Proin a nunc in massa molestie ornare. Morbi quis magna sapien. Morbi mauris nulla,
-                                malesuada sed tortor placerat, ultricies mattis diam. Praesent in libero in odio sodales
-                                sollicitudin. Duis non enim consequat, scelerisque ex vel, congue nisl. Aenean sit amet
-                                elit eros. Nulla vulputate ligula vehicula, tincidunt eros vel, tristique ipsum. Cras
-                                lectus arcu, congue nec neque vitae, dictum euismod risus. Pellentesque mollis neque a
-                                orci auctor pellentesque.</p>
-                            <p>Nullam vitae est orci. Fusce ornare ante id porta faucibus. Vivamus condimentum libero ut
-                                leo pulvinar, eget euismod mauris vestibulum. Mauris odio libero, suscipit vitae
-                                imperdiet eget, molestie id ante. Sed molestie orci non egestas rhoncus. Duis suscipit
-                                tincidunt dolor. Morbi in blandit enim, a pretium erat. In libero risus, consequat
-                                maximus vestibulum ac, consequat quis risus. Donec venenatis interdum leo nec finibus.
-                                Aenean auctor luctus lacus, ac viverra felis consectetur bibendum. Maecenas tempus
-                                iaculis aliquam. Sed lobortis rutrum nunc, sed varius dolor facilisis in. Aliquam rutrum
-                                dolor elit, vel suscipit lacus condimentum sed. Nulla vel lectus fermentum, pretium
-                                tellus vel, pulvinar leo. Duis fringilla tellus in augue suscipit auctor.</p>
-                            <p>Maecenas lacinia est vitae ligula facilisis, sed mollis elit vestibulum. Donec vehicula
-                                sodales velit eget ultricies. Suspendisse faucibus, nisl hendrerit ultricies rhoncus,
-                                ante nisl luctus nibh, ut consectetur erat nibh convallis dolor. Lorem ipsum dolor sit
-                                amet, consectetur adipiscing elit. Nulla ornare auctor magna, ac sagittis nibh ultricies
-                                et. Integer risus dui, pretium non efficitur ut, condimentum nec turpis. Fusce convallis
-                                dignissim scelerisque. Mauris eu lacinia tellus. Nulla facilisi. Sed sit amet lectus
-                                lectus. Aliquam hendrerit ultricies sapien nec scelerisque. Nullam vestibulum, erat
-                                vitae ullamcorper consequat, metus mauris efficitur nulla, tristique porta sem massa
-                                sollicitudin arcu. Phasellus neque augue, pellentesque in auctor ut, scelerisque sed
-                                dui.</p>
-                            <p>Proin ullamcorper nisl ac nulla elementum placerat. Sed massa mauris, fringilla ac
-                                rhoncus sed, rhoncus non quam. Vivamus tincidunt egestas blandit. Etiam at neque
-                                bibendum justo molestie egestas vel sit amet nisl. Curabitur sem urna, volutpat a
-                                consequat accumsan, semper quis tellus. Suspendisse hendrerit ligula massa, sit amet
-                                aliquam ligula pharetra eget. Praesent vel justo eget lectus mattis rhoncus. Class
-                                aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.
-                                Morbi at vestibulum magna. Etiam vitae mauris a felis vestibulum feugiat vel feugiat
-                                metus.</p>
-                            <p>Aliquam facilisis sapien nec diam eleifend sagittis. Duis commodo ullamcorper sapien, sit
-                                amet ultrices nibh placerat vel. Vestibulum fringilla mollis quam, ut malesuada velit
-                                dictum id. Mauris congue tempus elit, ac pretium tellus iaculis eu. Vestibulum eget ante
-                                viverra urna scelerisque mattis. Nullam venenatis augue mauris, sit amet feugiat lorem
-                                pharetra non. Nunc efficitur commodo mattis.</p>
-                            <p>Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos
-                                himenaeos. Nulla nisl eros, convallis vel gravida vitae, blandit sed neque. Vestibulum
-                                molestie sapien et vehicula fermentum. Vivamus maximus maximus mauris ac aliquam. Nam
-                                mattis auctor quam eget aliquet. Mauris tempor id ante vel aliquam. Sed leo tortor,
-                                interdum id sodales a, malesuada ac ligula.</p>
+                            <p class="w-700">To make a booking </p>
+                            <p>If you would like an offline application form, please request one or follow the instructions on our website. Each person traveling must complete the applicable application form. Next, you need to send us the completed booking form and the payments mentioned in paragraph 2 below.
+                                Your booking will be considered solid and a contract between us will enter into effect as soon as we receive your completed application form and your deposit, provided that we have already confirmed the availability of your chosen arrangements and you book within any applicable time limit. After that, we will email you a receipt for every money received as well as our invoice. If availability has not been verified, your reservation will be considered confirmed, and a contract will be formed when we send you our invoice. Any electronic acknowledgement of your booking made through our website without previous availability confirmation is not a confirmation of it.
+                                As soon as you receive your invoice, please carefully review it. If you believe that any information on the invoice or any other document is inaccurate or missing, please get in touch with us right away.
+                            </p>
+                            <br>
+
+                            <p class="w-700">Our Role and Limitation</p>
+                            <p>On behalf of airlines, flights, and properties/accommodations, we function as the official representative. Please be aware that although we act as their official representative, we do not manage these services directly. Our involvement is restricted to acting as a go-between for you and the outside service providers (such hotels and flights). The caliber and efficiency of the services rendered by the airlines, flights, and properties/accommodations are beyond our control. You understand and agree that, to the degree specified in these Terms and Conditions, we are solely accountable for our booking service. Because of this, we create a virtual email address on your behalf and give the third-party service providers your payment information in order to make reservations on your behalf. We do not offer property/accommodation rentals or air transportation services, thus we cannot be held liable if your luggage is misplaced, destroyed, taken, or otherwise rendered inaccessible to you.</p>
+                            <br>
+
+                            <p class="w-700">Special requests</p>
+                            <p>If you have any specific preferences, please let us know when you make your reservation. We shall make every effort to fulfill any such request or make arrangements
+                                for our vendors to do so. A special request's inclusion on your invoice or other documentation, or its acknowledgment that it has been noted or forwarded to the supplier, does not guarantee that it will be fulfilled. Special requests are contingent on availability until otherwise verified.
+                                If it is feasible, you should get written proof that a unique request that is significant to you will be fulfilled. This is for your own safety.
+                            </p><br>
+
+                            <p class="w-700">Our website</p>
+                            <p>The information contained in our website and in our other advertising material is believed correct to the best of our knowledge at the time of publication. However, errors may occasionally occur and information may subsequently change.
+                                You must therefore ensure you check all details of your chosen trip (including the price) with us at the time of booking.
+                            </p><br>
+
                         </div>
-                        <div class="col-12 mt-5">
+                        <div class="col-12 mt-2 px-5">
                             <input type="checkbox" name="conditions" value="yes" id="conditions">
                             <label for="" class="w-700">I agree to the terms and conditions.</label>
                         </div>
 
-                        <div class="col-12 mt-5" style="display:flex; justify-content: flex-end;">
+                        <div class="col-12 mt-5 px-5" style="display:flex; justify-content: flex-end;">
                             <button id="next-terms" class="btn btn-primary pl-5 pr-5 btn-next" type="button">Next</button>
                         </div>
-
                     </div>
                 </div>
             </div>

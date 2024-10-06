@@ -153,7 +153,7 @@ if (!$_SESSION['userid']) {
                             </div>
                         </div>
 
-                        <div class="col-4 mt-4">
+                        <div class="col-4 mt-4 last">
                             <label for="airline">Preferred Airline</label>
                             <select name="airline" id="airline" class="form-control">
                                 <option selected>Philippine Airlines</option>
@@ -167,8 +167,10 @@ if (!$_SESSION['userid']) {
                         <input type="hidden" name="userid" value="<?php echo $userid ?>">
                         <input type="hidden" name="source" value="Ticketed">
                         <input type="hidden" name="tickettype" id="tickettype" value="Round Trip">
-                        <div class="col-12 mt-4" style="display:flex; justify-content: flex-end;">
-                            <button id="next" class="btn btn-primary pl-5 pr-5 btn-next" type="button" name="ticketd">Next</button>
+                        <div class="col-12 mt-4" style="display:flex; justify-content: flex-end;">.
+                            <button id="remove-flight" class="btn btn-outline-danger pl-5 pr-5 mr-3" type="button" name="remove-flight" style="display:none">Remove Flight</button>
+                            <button id="add-flight" class="btn btn-outline-primary pl-5 pr-5" type="button" name="add-flight" style="display:none">Add Flight</button>
+                            <button id="next" class="btn btn-primary pl-5 pr-5 btn-next ml-3" type="button" name="ticketd">Next</button>
                             <button style="display:none" type="submit" name="ticket" id="submit">Next</button>
                         </div>
                     </div>

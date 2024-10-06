@@ -351,6 +351,32 @@ if (!$_SESSION['userid']) {
                 });
                 <?php unset($_SESSION['success']); ?>
             <?php endif; ?>
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(window.location.search);
+            const alert = urlParams.get('alert');
+
+            if (alert == 2) {
+                toastr["success"]("Settings saved")
+
+
+            }
+            toastr.options = {
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": true,
+                "progressBar": false,
+                "preventDuplicates": false,
+                "positionClass": "toast-top-right",
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            }
         </script>
 </body>
 
